@@ -3,6 +3,7 @@ from tkinter import *
 # This database dictionary will store user:password pairs (encrypted in some way)
 database = {}
 main_gui = Tk()
+user_info = []
 
 # The program structure might not be the neatest rn
 v1 = StringVar()
@@ -14,9 +15,28 @@ v2 = StringVar()
 label_2 = Label(main_gui, text="Please enter your password:")
 entry_pass = Entry(main_gui, textvariable=v2)
 
+# Text file has a space between username and password
+# Text file needs \n after last line, so when writing to file, make sure to put \n after each password
+#   or else you will get errors/not get last character of last password
+def read_users(textfile,user_info):
+    for line in textfile:
+        for i in range(0, len(line)-1):
+            if (line[i] == " "):
+                user = line[0:i]
+                password = line[i+1:len(line)-1]
+        user_info.append(user)
+        user_info.append(password)
+    return 1
+
 def encrypt(some_phrase):
     # some encryption method... we will figure it out
-    return some_phrase
+    phrase = str(input("Please enter a phrase: "))  #####
+    shift = 2   #####
+    length = len(some_phrase)
+    Conv = ""
+    for i in range(length):
+        Conv = Conv + chr(ord(phrase[i])+shift)
+    return Conv
 
 def work():
     print("yellow")
@@ -60,4 +80,7 @@ entry_pass.grid(row=1, column=1)
 button_submit.grid(row=2, column=0)
 
 # Runs the gui window
+textfile = open("user_data.txt", "r")
 mainloop()
+read_users(textfile,user_info)
+print(user_info)
