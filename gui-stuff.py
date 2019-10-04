@@ -15,27 +15,25 @@ v2 = StringVar()
 label_2 = Label(main_gui, text="Please enter your password:")
 entry_pass = Entry(main_gui, textvariable=v2)
 
-# Text file has a space between username and password
-# Text file needs \n after last line, so when writing to file, make sure to put \n after each password
-#   or else you will get errors/not get last character of last password
-def read_users(textfile,user_info):
-    for line in textfile:
-        for i in range(0, len(line)-1):
-            if (line[i] == " "):
-                user = line[0:i]
-                password = line[i+1:len(line)-1]
-        user_info.append(user)
-        user_info.append(password)
-    return 1
 
 def encrypt(some_phrase):
-    # some encryption method... we will figure it out
-    phrase = str(input("Please enter a phrase: "))  #####
+    # Given string (user or pass), encrypts using the shift value
+    # Used when STORING new user into database
     shift = 2   #####
     length = len(some_phrase)
     Conv = ""
     for i in range(length):
-        Conv = Conv + chr(ord(phrase[i])+shift)
+        Conv = Conv + chr(ord(some_phrase[i])+shift)
+    return Conv
+
+def decrypt(some_phrase):
+    # Given string (user or pass), decrypts using the shift value
+    # Used when READING existing user from database
+    shift = -2   #####
+    length = len(some_phrase)
+    Conv = ""
+    for i in range(length):
+        Conv = Conv + chr(ord(some_phrase[i])+shift)
     return Conv
 
 def work():
@@ -55,9 +53,10 @@ def process_data():
     # Conditional will check our two conditions for adding to database: less than 20 entries and the user doesnt exist.
     username = str(entry_user.get())
     password = str(entry_pass.get())
-    if len(database.items()) < 20 and database.get(username) is None:
+    if len(database.items()) < 20 and database.get(username) is None and len(password) > 0:     ###added no password case
         # Encrypt both the password and the username and update the database.
-
+        en_user = encrypt(username)             #####JOHN
+        en_pass = encrypt(password)             #####JOHN
         # database.update({encrypt(username): encrypt(password)})
         database.update({username: password})
         print("hello?")
@@ -66,6 +65,8 @@ def process_data():
     elif database.get(username):
         print("Username already exists.")
         return
+    elif len(password) == 0:            ###JOHN
+        print("Please enter password")  ###JOHN
     else:
         print("Database is full")
 
@@ -80,7 +81,4 @@ entry_pass.grid(row=1, column=1)
 button_submit.grid(row=2, column=0)
 
 # Runs the gui window
-textfile = open("user_data.txt", "r")
 mainloop()
-read_users(textfile,user_info)
-print(user_info)
