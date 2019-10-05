@@ -4,7 +4,8 @@ from tkinter import *
 database = {}
 main_gui = Tk()
 user_info = []
-
+# Shift value is hardcoded here as a constant for use later in the encrypt/decrypt functions
+SHIFT = 2
 # The program structure might not be the neatest rn
 v1 = StringVar()
 label_1 = Label(main_gui, text="Please enter your username:")
@@ -15,29 +16,25 @@ v2 = StringVar()
 label_2 = Label(main_gui, text="Please enter your password:")
 entry_pass = Entry(main_gui, textvariable=v2)
 
-
 def encrypt(some_phrase):
     # Given string (user or pass), encrypts using the shift value
     # Used when STORING new user into database
-    shift = 2   #####
+
     length = len(some_phrase)
     Conv = ""
     for i in range(length):
-        Conv = Conv + chr(ord(some_phrase[i])+shift)
+        Conv = Conv + chr(ord(some_phrase[i])+SHIFT)
     return Conv
 
 def decrypt(some_phrase):
     # Given string (user or pass), decrypts using the shift value
     # Used when READING existing user from database
-    shift = -2   #####
+
     length = len(some_phrase)
     Conv = ""
     for i in range(length):
-        Conv = Conv + chr(ord(some_phrase[i])+shift)
+        Conv = Conv + chr(ord(some_phrase[i])-SHIFT)
     return Conv
-
-def work():
-    print("yellow")
 
 def process_data():
 
@@ -56,10 +53,8 @@ def process_data():
     # Encrypt both the password and the username and update the database.
     en_user = encrypt(username)             #####JOHN
     en_pass = encrypt(password)             #####JOHN
-    if len(database.items()) < 20 and database.get(en_user) is None and len(password) > 0:     ###added no password case   
-        # database.update({encrypt(username): encrypt(password)})
+    if len(database.items()) < 20 and database.get(en_user) is None and len(password) > 0:     ###added no password case
         database.update({en_user: en_pass})
-        print("hello?")
         print(database)
 
     elif database.get(en_user):
