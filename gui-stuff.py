@@ -53,16 +53,16 @@ def process_data():
     # Conditional will check our two conditions for adding to database: less than 20 entries and the user doesnt exist.
     username = str(entry_user.get())
     password = str(entry_pass.get())
-    if len(database.items()) < 20 and database.get(username) is None and len(password) > 0:     ###added no password case
-        # Encrypt both the password and the username and update the database.
-        en_user = encrypt(username)             #####JOHN
-        en_pass = encrypt(password)             #####JOHN
+    # Encrypt both the password and the username and update the database.
+    en_user = encrypt(username)             #####JOHN
+    en_pass = encrypt(password)             #####JOHN
+    if len(database.items()) < 20 and database.get(en_user) is None and len(password) > 0:     ###added no password case   
         # database.update({encrypt(username): encrypt(password)})
-        database.update({username: password})
+        database.update({en_user: en_pass})
         print("hello?")
         print(database)
 
-    elif database.get(username):
+    elif database.get(en_user):
         print("Username already exists.")
         return
     elif len(password) == 0:            ###JOHN
