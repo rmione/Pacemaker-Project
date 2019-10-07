@@ -46,11 +46,10 @@ def dump():
     since this copy can be written to memory and accessed whether or not the DCM python script is running or not.
 
     """
-    print("start")
     # 'w+' mode is used to overwrite the previous database with the newest version.
     with open(DUMP_LOCATION, 'w+') as dump_file:
         json.dump(database, dump_file, indent=4, sort_keys=True)
-    print("end")
+
 
 def process_data():
 
