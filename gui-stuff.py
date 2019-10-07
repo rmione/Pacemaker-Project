@@ -1,11 +1,24 @@
 from tkinter import *
-
+import json
+import os
 # This database dictionary will store user:password pairs (encrypted in some way)
 database = {}
 main_gui = Tk()
 user_info = []
 # Shift value is hardcoded here as a constant for use later in the encrypt/decrypt functions
 SHIFT = 2
+# Database dump location is going to be made a constant so it doesnt constantly need to be remade.
+DUMP_LOCATION = os.getcwd() + '\database.json'
+print(DUMP_LOCATION)
+
+# Checks if the json file exists
+if os.path.exists(DUMP_LOCATION):
+    # if it exists, load in that database as the current database. Now it has memory
+    with open(DUMP_LOCATION) as f:
+        database = json.load(f)
+else:
+    # Otherwise initialize a new database. 
+    database = {}
 # The program structure might not be the neatest rn
 v1 = StringVar()
 label_1 = Label(main_gui, text="Please enter your username:")
@@ -36,6 +49,17 @@ def decrypt(some_phrase):
         Conv = Conv + chr(ord(some_phrase[i])-SHIFT)
     return Conv
 
+def dump():
+    """
+    This function writes the current state of the user database to a json file. Having a local copy is very important
+    since this copy can be written to memory and accessed whether or not the DCM python script is running or not.
+
+    """
+    # 'w+' mode is used to overwrite the previous database with the newest version.
+    with open(DUMP_LOCATION, 'w+') as dump_file:
+        json.dump(database, dump_file, indent=4, sort_keys=True)
+
+
 def process_data():
 
     """
@@ -53,10 +77,10 @@ def process_data():
     # Encrypt both the password and the username and update the database.
     en_user = encrypt(username)             #####JOHN
     en_pass = encrypt(password)             #####JOHN
-    if len(database.items()) < 20 and database.get(en_user) is None and len(password) > 0:     ###added no password case
+    if len(database.items()) < 10 and database.get(en_user) is None and len(password) > 0:     ###added no password case
         database.update({en_user: en_pass})
         print(database)
-
+        dump()
     elif database.get(en_user):
         print("Username already exists.")
         return
