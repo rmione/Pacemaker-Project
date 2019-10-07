@@ -10,6 +10,15 @@ SHIFT = 2
 # Database dump location is going to be made a constant so it doesnt constantly need to be remade.
 DUMP_LOCATION = os.getcwd() + '\database.json'
 print(DUMP_LOCATION)
+
+# Checks if the json file exists
+if os.path.exists(DUMP_LOCATION):
+    # if it exists, load in that database as the current database. Now it has memory
+    with open(DUMP_LOCATION) as f:
+        database = json.load(f)
+else:
+    # Otherwise initialize a new database. 
+    database = {}
 # The program structure might not be the neatest rn
 v1 = StringVar()
 label_1 = Label(main_gui, text="Please enter your username:")
