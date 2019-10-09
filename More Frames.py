@@ -4,13 +4,96 @@ from tkinter import ttk
 import json
 import os
 
+'''                          DECLARATIONS
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+'''                               
+# This database dictionary will store user:password pairs (encrypted in some way)
+database = {"zx":"zx"}
+user_info = []
+
+# Shift value is hardcoded here as a constant for use later in the encrypt/decrypt functions
+SHIFT = 2
+# Database dump location is going to be made a constant so it doesnt constantly need to be remade.
+DUMP_LOCATION = os.getcwd() + '\database.json'
+print(DUMP_LOCATION)
+
+# Checks if the json file exists
+if os.path.exists(DUMP_LOCATION):
+    # if it exists, load in that database as the current database. Now it has memory
+    with open(DUMP_LOCATION) as f:
+        database = json.load(f)
+else:
+    # Otherwise initialize a new database. 
+    database = {}
 
 
+
+    
+
+'''                           Functions
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+'''
+def dump():
+    """
+    This function writes the current state of the user database to a json file. Having a local copy is very important
+    since this copy can be written to memory and accessed whether or not the DCM python script is running or not.
+
+    """
+    # 'w+' mode is used to overwrite the previous database with the newest version.
+    with open(DUMP_LOCATION, 'w+') as dump_file:
+        json.dump(database, dump_file, indent=4, sort_keys=True)
+
+def process_data():
+    """
+    This function takes the desired username and password input into the two text boxes in the GUI and does some
+    operations.
+    It checks it against the existing database, which must be limited to 20 users, to see if it exists, and if not, will
+    input it into the database.
+    """
+    # Conditional will check our two conditions for adding to database: less than 20 entries and the user doesnt exist.
+    username = str(entry_user.get())
+    password = str(entry_pass.get())
+    # Encrypt both the password and the username and update the database.
+    en_user = encrypt(username)             #####JOHN
+    en_pass = encrypt(password)             #####JOHN
+    if len(database.items()) < 10 and database.get(en_user) is None and len(password) > 0:     ###added no password case
+        database.update({en_user: en_pass})
+        print(database)
+        dump()
+    elif database.get(en_user):
+        print("Username already exists.")
+        return
+    elif len(password) == 0:            ###JOHN
+        print("Please enter password")  ###JOHN
+    else:
+        print("Database is full")
+
+        
+def login_test(username, password):
+    '''
+    Returns 0 if invalid information, incorrect credentials
+    Returns 1 if correct login
+    '''
+    print(username, password)
+    print("%d", database.get(username))
+    if (len(username)==0) or (len(password)==0):
+        print("Invalid credentials")
+        return 0
+    if database.get(username) is None:
+        print("User does not exist")
+        return 0
+    if (database.get(username)==password):
+        print("Valid credentials")
+
+
+'''                  Tkinter Windows & Interface
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+'''
 class SampleApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self._frame = None
-        self.switch_frame(Menu)
+        self.switch_frame(StartUp)
 
     def switch_frame(self, frame_class):
         """Destroys current frame and replaces it with a new one."""
@@ -24,24 +107,26 @@ class StartUp(tk.Frame):
     def __init__(self, master):      
         tk.Frame.__init__(self, master)
         tk.Button(self, text="Login",
-                  command=lambda: master.switch_frame(Login)).pack()
+                  command=lambda: master.switch_frame(Login)).pack(padx=10,pady=10)
         tk.Button(self, text="Create User",
-                  command=lambda: master.switch_frame(CreateUser)).pack()
+                  command=lambda: master.switch_frame(CreateUser)).pack(padx=10,pady=10)
 
 class Login(tk.Frame):
     def __init__(self, master):
         v1 = tk.StringVar()
         v2 = tk.StringVar()
+        LOGIN = 0
         tk.Frame.__init__(self, master)
-        #tk.Label(self, text="Enter your credentials").pack(side="top", fill="x", pady=10)
+        tk.Label(self, text="Enter your credentials").pack(side="top", fill="x", pady=10)
         tk.Label(self, text="Enter Username").pack()
         tk.Entry(self, textvariable=v1).pack()
         tk.Label(self, text="Enter Password").pack()
         tk.Entry(self, textvariable=v2).pack(padx=5)
-        tk.Button(self, text="Submit").pack()
+        tk.Button(self, text="Submit", command=lambda: login_test(str(v1),str(v2))).pack()
         tk.Button(self, text="Return to start page",
                   command=lambda: master.switch_frame(StartUp)).pack()
-        
+        if (LOGIN==1):
+            master.switch_frame(Menu)
 
 
 class CreateUser(tk.Frame):
@@ -97,6 +182,8 @@ class Menu(tk.Frame):
         row3.pack()
         row4 = ttk.Frame(AOOTab)
         row4.pack()
+        row5 = ttk.Frame(AOOTab)
+        row5.pack()
         tk.Label(row1, text="Lower Rate Limit").pack(side="left", padx=5, pady=5)
         tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
         tk.Label(row2, text="Upper Rate Limit").pack(side="left", padx=5, pady=5)
@@ -105,6 +192,7 @@ class Menu(tk.Frame):
         tk.Entry(row3, textvariable=A_Amp).pack(side="left", padx=5, pady=5)
         tk.Label(row4, text="Atrial Pulse Width").pack(side="left", padx=2, pady=5)
         tk.Entry(row4, textvariable=A_PW).pack(side="left", padx=5, pady=5)
+        tk.Button(row5, text="Submit").pack(side="bottom", pady=5)
 
         #VOO
         row1 = ttk.Frame(VOOTab)
@@ -115,6 +203,8 @@ class Menu(tk.Frame):
         row3.pack()
         row4 = ttk.Frame(VOOTab)
         row4.pack()
+        row5 = ttk.Frame(VOOTab)
+        row5.pack()
         tk.Label(row1, text="Lower Rate Limit").pack(side="left", padx=22, pady=5)
         tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=0, pady=5)
         tk.Label(row2, text="Upper Rate Limit").pack(side="left", padx=22, pady=5)
@@ -123,6 +213,7 @@ class Menu(tk.Frame):
         tk.Entry(row3, textvariable=V_Amp).pack(side="left", padx=5, pady=5)
         tk.Label(row4, text="Ventricular Pulse Width").pack(side="left", padx=5, pady=5)
         tk.Entry(row4, textvariable=V_PW).pack(side="left", padx=5, pady=5)
+        tk.Button(row5, text="Submit").pack(side="bottom", pady=5)
 
         #AAI
         row1 = ttk.Frame(AAITab)
@@ -137,6 +228,8 @@ class Menu(tk.Frame):
         row5.pack()
         row6 = ttk.Frame(AAITab)
         row6.pack()
+        row7 = ttk.Frame(AAITab)
+        row7.pack()
         tk.Label(row1, text="Lower Rate Limit").pack(side="left", padx=5, pady=5)
         tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
         tk.Label(row2, text="Upper Rate Limit").pack(side="left", padx=5, pady=5)
@@ -149,6 +242,7 @@ class Menu(tk.Frame):
         tk.Entry(row5, textvariable=A_Sense).pack(side="left", padx=5, pady=5)
         tk.Label(row6, text="ARP").pack(side="left", padx=37, pady=5)
         tk.Entry(row6, textvariable=ARP).pack(side="left", padx=5, pady=5)
+        tk.Button(row7, text="Submit").pack(side="bottom", pady=5)
 
         #VVI
         row1 = ttk.Frame(VVITab)
@@ -163,6 +257,8 @@ class Menu(tk.Frame):
         row5.pack()
         row6 = ttk.Frame(VVITab)
         row6.pack()
+        row7 = ttk.Frame(VVITab)
+        row7.pack()
         tk.Label(row1, text="Lower Rate Limit").pack(side="left", padx=20, pady=5)
         tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
         tk.Label(row2, text="Upper Rate Limit").pack(side="left", padx=20, pady=5)
@@ -175,6 +271,8 @@ class Menu(tk.Frame):
         tk.Entry(row5, textvariable=A_Sense).pack(side="left", padx=5, pady=5)
         tk.Label(row6, text="VRP").pack(side="left", padx=52, pady=5)
         tk.Entry(row6, textvariable=ARP).pack(side="left", padx=5, pady=5)
+        tk.Button(row7, text="Submit",
+                  command=lambda: print("VVI")).pack(side="bottom", pady=5)
         
 
 if __name__ == "__main__":
