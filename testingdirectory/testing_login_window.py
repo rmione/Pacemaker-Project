@@ -39,7 +39,7 @@ def decrypt(ome_phrase):
         Conv = Conv + chr(ord(some_phrase[i]) - SHIFT)
     return Conv
 
-def process_data(username, password):
+def process_data(username, password, object):
 
     """
     This function takes the desired username and password input into the two text boxes in the GUI and does some
@@ -60,6 +60,8 @@ def process_data(username, password):
         database.update({en_user: en_pass})
         print(database)
         dump()
+        # We passed an object through (master in this case)
+        object.switch_frame(Menu)
     elif database.get(en_user):
         print("Username already exists.")
         return
@@ -67,6 +69,7 @@ def process_data(username, password):
         print("Please enter password")
     else:
         print("Database is full")
+
 
 def dump():
     """
@@ -131,7 +134,7 @@ class CreateUser(tk.Frame):
         tk.Label(self, text="Enter Password").pack()
         tk.Entry(self, textvariable=v2).pack()
         tk.Button(self, text="Create",
-                  command=lambda: process_data(v1, v2)).pack()
+                  command=lambda: process_data(v1, v2, master)).pack()
         tk.Button(self, text="Return to start page",
                   command=lambda: master.switch_frame(StartUp)).pack()
 
@@ -141,7 +144,16 @@ class Menu(tk.Frame):
         tk.Frame.__init__(self, master)
         mode = tk.IntVar()
         mode = 0
-        othermode = 0
+        Low_Limit = tk.IntVar()
+        Up_Limit = tk.IntVar()
+        A_Amp = tk.IntVar()
+        V_Amp = tk.IntVar()
+        A_PW = tk.IntVar()
+        V_PW = tk.IntVar()
+        A_Sense = tk.IntVar()
+        V_Sense = tk.IntVar()
+        ARP = tk.IntVar()
+        VRP = tk.IntVar()
 
         tabControl = ttk.Notebook(self)
         AOOTab = ttk.Frame(tabControl)
@@ -152,13 +164,96 @@ class Menu(tk.Frame):
         tabControl.add(VOOTab, text='VOO')
         tabControl.add(AAITab, text='AAI')
         tabControl.add(VVITab, text='VVI')
-        tabControl.pack(expand=2, side="top")
+        tabControl.pack(expand=1, side="top")
 
-        tk.Label(AOOTab, text="Create a new user").pack(side="left", fill="x", pady=10)
-        tk.Label(AOOTab, text="Create Magic").pack(side="left")
-        tk.Label(VOOTab, text="Enter Username").pack()
+        # AOO
+        row1 = ttk.Frame(AOOTab)
+        row1.pack()
+        row2 = ttk.Frame(AOOTab)
+        row2.pack()
+        row3 = ttk.Frame(AOOTab)
+        row3.pack()
+        row4 = ttk.Frame(AOOTab)
+        row4.pack()
+        tk.Label(row1, text="Lower Rate Limit").pack(side="left", padx=5, pady=5)
+        tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Upper Rate Limit").pack(side="left", padx=5, pady=5)
+        tk.Entry(row2, textvariable=Up_Limit).pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Atrial Amplitude").pack(side="left", padx=5, pady=5)
+        tk.Entry(row3, textvariable=A_Amp).pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Atrial Pulse Width").pack(side="left", padx=2, pady=5)
+        tk.Entry(row4, textvariable=A_PW).pack(side="left", padx=5, pady=5)
 
-        print(mode)
+        # VOO
+        row1 = ttk.Frame(VOOTab)
+        row1.pack()
+        row2 = ttk.Frame(VOOTab)
+        row2.pack()
+        row3 = ttk.Frame(VOOTab)
+        row3.pack()
+        row4 = ttk.Frame(VOOTab)
+        row4.pack()
+        tk.Label(row1, text="Lower Rate Limit").pack(side="left", padx=22, pady=5)
+        tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=0, pady=5)
+        tk.Label(row2, text="Upper Rate Limit").pack(side="left", padx=22, pady=5)
+        tk.Entry(row2, textvariable=Up_Limit).pack(side="left", padx=0, pady=5)
+        tk.Label(row3, text="Ventricular Amplitude").pack(side="left", padx=8, pady=5)
+        tk.Entry(row3, textvariable=V_Amp).pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Ventricular Pulse Width").pack(side="left", padx=5, pady=5)
+        tk.Entry(row4, textvariable=V_PW).pack(side="left", padx=5, pady=5)
+
+        # AAI
+        row1 = ttk.Frame(AAITab)
+        row1.pack()
+        row2 = ttk.Frame(AAITab)
+        row2.pack()
+        row3 = ttk.Frame(AAITab)
+        row3.pack()
+        row4 = ttk.Frame(AAITab)
+        row4.pack()
+        row5 = ttk.Frame(AAITab)
+        row5.pack()
+        row6 = ttk.Frame(AAITab)
+        row6.pack()
+        tk.Label(row1, text="Lower Rate Limit").pack(side="left", padx=5, pady=5)
+        tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Upper Rate Limit").pack(side="left", padx=5, pady=5)
+        tk.Entry(row2, textvariable=Up_Limit).pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Atrial Amplitude").pack(side="left", padx=5, pady=5)
+        tk.Entry(row3, textvariable=A_Amp).pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Atrial Pulse Width").pack(side="left", padx=2, pady=5)
+        tk.Entry(row4, textvariable=A_PW).pack(side="left", padx=5, pady=5)
+        tk.Label(row5, text="Atrial Sensitivity").pack(side="left", padx=6, pady=5)
+        tk.Entry(row5, textvariable=A_Sense).pack(side="left", padx=5, pady=5)
+        tk.Label(row6, text="ARP").pack(side="left", padx=37, pady=5)
+        tk.Entry(row6, textvariable=ARP).pack(side="left", padx=5, pady=5)
+
+        # VVI
+        row1 = ttk.Frame(VVITab)
+        row1.pack()
+        row2 = ttk.Frame(VVITab)
+        row2.pack()
+        row3 = ttk.Frame(VVITab)
+        row3.pack()
+        row4 = ttk.Frame(VVITab)
+        row4.pack()
+        row5 = ttk.Frame(VVITab)
+        row5.pack()
+        row6 = ttk.Frame(VVITab)
+        row6.pack()
+        tk.Label(row1, text="Lower Rate Limit").pack(side="left", padx=20, pady=5)
+        tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Upper Rate Limit").pack(side="left", padx=20, pady=5)
+        tk.Entry(row2, textvariable=Up_Limit).pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Ventrical Amplitude").pack(side="left", padx=11, pady=5)
+        tk.Entry(row3, textvariable=A_Amp).pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Ventricular Pulse Width").pack(side="left", padx=2, pady=5)
+        tk.Entry(row4, textvariable=A_PW).pack(side="left", padx=5, pady=5)
+        tk.Label(row5, text="Ventricular Sensitivity").pack(side="left", padx=6, pady=5)
+        tk.Entry(row5, textvariable=A_Sense).pack(side="left", padx=5, pady=5)
+        tk.Label(row6, text="VRP").pack(side="left", padx=52, pady=5)
+        tk.Entry(row6, textvariable=ARP).pack(side="left", padx=5, pady=5)
+
 
 if __name__ == "__main__":
     app = SampleApp()
