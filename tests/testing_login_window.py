@@ -29,7 +29,7 @@ def encrypt(some_phrase):
         Conv = Conv + chr(ord(some_phrase[i]) + SHIFT)
     return Conv
 
-def decrypt(ome_phrase):
+def decrypt(some_phrase):
     # Given string (user or pass), decrypts using the shift value
     # Used when READING existing user from database
 
@@ -50,11 +50,13 @@ def process_data(username, password, object):
 
 
     """
-    # Conditional will check our two conditions for adding to database: less than 20 entries and the user doesnt exist.
 
     # Encrypt both the password and the username and update the database.
     en_user = encrypt(str(username.get()))
     en_pass = encrypt(str(password.get()))
+
+    # Conditional will check our three conditions for adding to database: less than 10 entries and the user doesnt exist, and we have valid password.
+
     if len(database.items()) < 10 and database.get(en_user) is None and len(
             en_pass) > 0:  # added no password case
         database.update({en_user: en_pass})
@@ -85,7 +87,7 @@ def dump():
 
 
 class SampleApp(tk.Tk):
-    def __init__(self):
+    def __init__(self):b
         tk.Tk.__init__(self)
         self._frame = None
         self.switch_frame(StartUp)

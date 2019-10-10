@@ -7,12 +7,13 @@ import os
 '''                          DECLARATIONS
 <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 '''                               
-# This database dictionary will store user:password pairs (encrypted in some way)
+# This database dictionary will store user:password pairs encrypted
 database = {"zx":"zx"}
 user_info = []
 
 # Shift value is hardcoded here as a constant for use later in the encrypt/decrypt functions
 SHIFT = 2
+
 # Database dump location is going to be made a constant so it doesnt constantly need to be remade.
 DUMP_LOCATION = os.getcwd() + '\database.json'
 print(DUMP_LOCATION)
@@ -26,49 +27,81 @@ else:
     # Otherwise initialize a new database. 
     database = {}
 
-
-
-    
-
 '''                           Functions
 <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 '''
-def dump():
-    """
-    This function writes the current state of the user database to a json file. Having a local copy is very important
-    since this copy can be written to memory and accessed whether or not the DCM python script is running or not.
 
+class IO:
     """
-    # 'w+' mode is used to overwrite the previous database with the newest version.
-    with open(DUMP_LOCATION, 'w+') as dump_file:
-        json.dump(database, dump_file, indent=4, sort_keys=True)
+    Simple class to do with file i/o and encryptiom/decryption. Consists of three class methods.
+    """
+    @classmethod
+    def encrypt(cls, some_phrase):
+        # Given string (user or pass), encrypts using the shift value
+        # Used when STORING new user into database
 
-def process_data():
+        length = len(some_phrase)
+        Conv = ""
+        for i in range(length):
+            Conv = Conv + chr(ord(some_phrase[i]) + SHIFT)
+        return Conv
+
+    @classmethod
+    def decrypt(cls, some_phrase):
+        # Given string (user or pass), decrypts using the shift value
+        # Used when READING existing user from database
+
+        length = len(some_phrase)
+        Conv = ""
+        for i in range(length):
+            Conv = Conv + chr(ord(some_phrase[i]) - SHIFT)
+        return Conv
+
+    @classmethod
+    def dump(cls):
+        """
+        This function writes the current state of the user database to a json file. Having a local copy is very important
+        since this copy can be written to memory and accessed whether or not the DCM python script is running or not.
+
+        """
+        # 'w+' mode is used to overwrite the previous database with the newest version.
+        with open(DUMP_LOCATION, 'w+') as dump_file:
+            json.dump(database, dump_file, indent=4, sort_keys=True)
+
+
+def create_user(username, password, object):
     """
     This function takes the desired username and password input into the two text boxes in the GUI and does some
     operations.
     It checks it against the existing database, which must be limited to 20 users, to see if it exists, and if not, will
     input it into the database.
+
+
+
     """
-    # Conditional will check our two conditions for adding to database: less than 20 entries and the user doesnt exist.
-    username = str(entry_user.get())
-    password = str(entry_pass.get())
+
     # Encrypt both the password and the username and update the database.
-    en_user = encrypt(username)             #####JOHN
-    en_pass = encrypt(password)             #####JOHN
-    if len(database.items()) < 10 and database.get(en_user) is None and len(password) > 0:     ###added no password case
+    en_user = IO.encrypt(str(username.get()))
+    en_pass = IO.encrypt(str(password.get()))
+
+    # Conditional will check our three conditions for adding to database: less than 10 entries and the user doesnt exist, and we have a valid password.
+
+    if len(database.items()) < 10 and database.get(en_user) is None and len(
+            en_pass) > 0:  # added no password case
         database.update({en_user: en_pass})
         print(database)
-        dump()
+        IO.dump()
+        # We passed an object through (master in this case)
+        object.switch_frame(Menu)
     elif database.get(en_user):
         print("Username already exists.")
         return
-    elif len(password) == 0:            ###JOHN
-        print("Please enter password")  ###JOHN
+    elif len(en_pass) == 0:
+        print("Please enter password")
     else:
         print("Database is full")
 
-        
+
 def login_test(username, password):
     '''
     Returns 0 if invalid information, incorrect credentials
@@ -82,7 +115,7 @@ def login_test(username, password):
     if database.get(username) is None:
         print("User does not exist")
         return 0
-    if (database.get(username)==password):
+    if IO.decrypt(database.get(username))==password:
         print("Valid credentials")
 
 
@@ -140,7 +173,7 @@ class CreateUser(tk.Frame):
         tk.Label(self, text="Enter Password").pack()
         tk.Entry(self, textvariable=v2).pack()
         tk.Button(self, text="Create",
-                  command=lambda: master.switch_frame(Menu)).pack()
+                  command=lambda: create_user(v1, v2, master)).pack()
         tk.Button(self, text="Return to start page",
                   command=lambda: master.switch_frame(StartUp)).pack()
         
