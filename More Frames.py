@@ -8,7 +8,8 @@ import os
 <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 '''                               
 # This database dictionary will store user:password pairs encrypted
-database = {"zx":"zx"}
+database = {}
+pacemaker_values = {}
 user_info = []
 
 # Shift value is hardcoded here as a constant for use later in the encrypt/decrypt functions
@@ -18,6 +19,10 @@ SHIFT = 2
 DUMP_LOCATION = os.getcwd() + '\database.json'
 print(DUMP_LOCATION)
 
+UPLOAD_LOCATION = os.getcwd() + '\SerialComm.json'
+print(UPLOAD_LOCATION)
+
+''' DATABASE '''
 # Checks if the json file exists
 if os.path.exists(DUMP_LOCATION):
     # if it exists, load in that database as the current database. Now it has memory
@@ -26,6 +31,16 @@ if os.path.exists(DUMP_LOCATION):
 else:
     # Otherwise initialize a new database. 
     database = {}
+
+''' PACEMAKER VALUES '''
+# Checks if the json file exists
+if os.path.exists(UPLOAD_LOCATION):
+    # if it exists, load in that database as the current database. Now it has memory
+    with open(UPLOAD_LOCATION) as f:
+        pacemaker_values = json.load(f)
+else:
+    # Otherwise initialize a new database. 
+    pacemaker_values = {}
 
 '''                           Functions
 <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
@@ -68,6 +83,17 @@ class IO:
         with open(DUMP_LOCATION, 'w+') as dump_file:
             json.dump(database, dump_file, indent=4, sort_keys=True)
 
+    @classmethod
+    def upload(cls):
+        """
+        This function writes the current state of the user database to a json file. Having a local copy is very important
+        since this copy can be written to memory and accessed whether or not the DCM python script is running or not.
+
+        """
+        # 'w+' mode is used to overwrite the previous database with the newest version.
+        with open(UPLOAD_LOCATION, 'w+') as dump_file:
+            json.dump(pacemaker_values, dump_file, indent=4, sort_keys=True)
+
 
 def create_user(username, password, object):
     """
@@ -87,7 +113,7 @@ def create_user(username, password, object):
     if len(database.items()) < 10 and database.get(en_user) is None and len(
             en_pass) > 0:  # added no password case
         database.update({en_user: en_pass})
-        print(database)
+        print(database)  #########################################################TAKE OUT WHEN READY###############
         IO.dump()
         # We passed an object through (master in this case)
         object.switch_frame(Menu)
@@ -100,26 +126,34 @@ def create_user(username, password, object):
         print("Database is full")
 
 
-def login_test(username, password):
+def login_test(username, password, object):
     '''
     Function takes text-variable version of username and password.
-    Returns 0 if invalid information, incorrect credentials
-    Returns 1 if correct login
     '''
     # Like in the create user function we will be using the encoded version
     en_user = IO.encrypt(str(username.get()))
     en_pass = IO.encrypt(str(password.get()))
-    print(en_user, en_pass)
 
-    print("%d", database.get(en_user))
     if (len(en_user) == 0) or (len(en_pass) == 0):
         print("Invalid credentials")
-        return 0
-    if database.get(en_user) is None:
+    elif database.get(en_user) == en_pass:
+        object.switch_frame(Menu)
+    else:
         print("User does not exist")
-        return 0
-    if database.get(en_user) == en_pass:
-        return 1
+    
+def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
+    pacemaker_values.update({"Mode":mode})
+    pacemaker_values.update({"Low_Limit":str(low)})
+    pacemaker_values.update({"Up_Limit":str(up)})
+    pacemaker_values.update({"A_Amp":str(AAmp)})
+    pacemaker_values.update({"V_Amp":str(VAmp)})
+    pacemaker_values.update({"A_PW":str(APW)})
+    pacemaker_values.update({"V_PW":str(VPW)})
+    pacemaker_values.update({"A_Sense":str(ASense)})
+    pacemaker_values.update({"V_Sense":str(VSense)})
+    pacemaker_values.update({"ARP":str(ARP)})
+    pacemaker_values.update({"VRP":str(VRP)})
+    IO.upload()
 
 
 '''                  Tkinter Windows & Interface
@@ -158,7 +192,7 @@ class Login(tk.Frame):
         tk.Entry(self, textvariable=v1).pack()
         tk.Label(self, text="Enter Password").pack()
         tk.Entry(self, textvariable=v2).pack(padx=5)
-        tk.Button(self, text="Submit", command=lambda: login_test(str(v1),str(v2))).pack()
+        tk.Button(self, text="Submit", command=lambda: login_test(v1,v2, master)).pack()
         tk.Button(self, text="Return to start page",
                   command=lambda: master.switch_frame(StartUp)).pack()
         if (LOGIN==1):
@@ -185,18 +219,16 @@ class CreateUser(tk.Frame):
 class Menu(tk.Frame):
     def __init__(self, master):      
         tk.Frame.__init__(self, master)
-        mode = tk.IntVar()
-        mode = 0
-        Low_Limit = tk.IntVar()
-        Up_Limit = tk.IntVar()
-        A_Amp = tk.IntVar()
-        V_Amp = tk.IntVar()
-        A_PW = tk.IntVar()
-        V_PW = tk.IntVar()
-        A_Sense = tk.IntVar()
-        V_Sense = tk.IntVar()
-        ARP = tk.IntVar()
-        VRP = tk.IntVar()
+        Low_Limit = tk.StringVar()
+        Up_Limit = tk.StringVar()
+        A_Amp = tk.StringVar()
+        V_Amp = tk.StringVar()
+        A_PW = tk.StringVar()
+        V_PW = tk.StringVar()
+        A_Sense = tk.StringVar()
+        V_Sense = tk.StringVar()
+        ARP = tk.StringVar()
+        VRP = tk.StringVar()
         
         tabControl = ttk.Notebook(self)
         AOOTab = ttk.Frame(tabControl)
@@ -228,7 +260,8 @@ class Menu(tk.Frame):
         tk.Entry(row3, textvariable=A_Amp).pack(side="left", padx=5, pady=5)
         tk.Label(row4, text="Atrial Pulse Width").pack(side="left", padx=2, pady=5)
         tk.Entry(row4, textvariable=A_PW).pack(side="left", padx=5, pady=5)
-        tk.Button(row5, text="Submit").pack(side="bottom", pady=5)
+        tk.Button(row5, text="Submit", command=lambda :
+                  update_info(1, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0, A_PW.get(), 0, 0, 0, 0, 0)).pack(side="bottom", pady=5)
 
         #VOO
         row1 = ttk.Frame(VOOTab)
@@ -249,7 +282,8 @@ class Menu(tk.Frame):
         tk.Entry(row3, textvariable=V_Amp).pack(side="left", padx=5, pady=5)
         tk.Label(row4, text="Ventricular Pulse Width").pack(side="left", padx=5, pady=5)
         tk.Entry(row4, textvariable=V_PW).pack(side="left", padx=5, pady=5)
-        tk.Button(row5, text="Submit").pack(side="bottom", pady=5)
+        tk.Button(row5, text="Submit", command=lambda :
+                  update_info(2, Low_Limit.get(), Up_Limit.get(), 0, V_Amp.get(), 0, V_PW.get(), 0, 0, 0, 0)).pack(side="bottom", pady=5)
 
         #AAI
         row1 = ttk.Frame(AAITab)
@@ -278,7 +312,8 @@ class Menu(tk.Frame):
         tk.Entry(row5, textvariable=A_Sense).pack(side="left", padx=5, pady=5)
         tk.Label(row6, text="ARP").pack(side="left", padx=37, pady=5)
         tk.Entry(row6, textvariable=ARP).pack(side="left", padx=5, pady=5)
-        tk.Button(row7, text="Submit").pack(side="bottom", pady=5)
+        tk.Button(row7, text="Submit", command=lambda :
+                  update_info(3, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0, A_PW.get(), 0, A_Sense.get(), 0, ARP.get(), 0)).pack(side="bottom", pady=5)
 
         #VVI
         row1 = ttk.Frame(VVITab)
@@ -300,15 +335,15 @@ class Menu(tk.Frame):
         tk.Label(row2, text="Upper Rate Limit").pack(side="left", padx=20, pady=5)
         tk.Entry(row2, textvariable=Up_Limit).pack(side="left", padx=5, pady=5)
         tk.Label(row3, text="Ventrical Amplitude").pack(side="left", padx=11, pady=5)
-        tk.Entry(row3, textvariable=A_Amp).pack(side="left", padx=5, pady=5)
+        tk.Entry(row3, textvariable=V_Amp).pack(side="left", padx=5, pady=5)
         tk.Label(row4, text="Ventricular Pulse Width").pack(side="left", padx=2, pady=5)
-        tk.Entry(row4, textvariable=A_PW).pack(side="left", padx=5, pady=5)
+        tk.Entry(row4, textvariable=V_PW).pack(side="left", padx=5, pady=5)
         tk.Label(row5, text="Ventricular Sensitivity").pack(side="left", padx=6, pady=5)
-        tk.Entry(row5, textvariable=A_Sense).pack(side="left", padx=5, pady=5)
+        tk.Entry(row5, textvariable=V_Sense).pack(side="left", padx=5, pady=5)
         tk.Label(row6, text="VRP").pack(side="left", padx=52, pady=5)
-        tk.Entry(row6, textvariable=ARP).pack(side="left", padx=5, pady=5)
-        tk.Button(row7, text="Submit",
-                  command=lambda: print("VVI")).pack(side="bottom", pady=5)
+        tk.Entry(row6, textvariable=VRP).pack(side="left", padx=5, pady=5)
+        tk.Button(row7, text="Submit", command=lambda :
+                  update_info(4, Low_Limit.get(), Up_Limit.get(), 0, V_Amp.get(), 0, A_PW.get(), 0, V_Sense.get(), 0, VRP.get())).pack(side="bottom", pady=5)
         
 
 if __name__ == "__main__":
