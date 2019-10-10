@@ -76,8 +76,6 @@ def create_user(username, password, object):
     It checks it against the existing database, which must be limited to 20 users, to see if it exists, and if not, will
     input it into the database.
 
-
-
     """
 
     # Encrypt both the password and the username and update the database.
@@ -104,19 +102,24 @@ def create_user(username, password, object):
 
 def login_test(username, password):
     '''
+    Function takes text-variable version of username and password.
     Returns 0 if invalid information, incorrect credentials
     Returns 1 if correct login
     '''
-    print(username, password)
-    print("%d", database.get(username))
-    if (len(username)==0) or (len(password)==0):
+    # Like in the create user function we will be using the encoded version
+    en_user = IO.encrypt(str(username.get()))
+    en_pass = IO.encrypt(str(password.get()))
+    print(en_user, en_pass)
+
+    print("%d", database.get(en_user))
+    if (len(en_user) == 0) or (len(en_pass) == 0):
         print("Invalid credentials")
         return 0
-    if database.get(username) is None:
+    if database.get(en_user) is None:
         print("User does not exist")
         return 0
-    if IO.decrypt(database.get(username))==password:
-        print("Valid credentials")
+    if database.get(en_user) == en_pass:
+        return 1
 
 
 '''                  Tkinter Windows & Interface
