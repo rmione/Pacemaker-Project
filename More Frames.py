@@ -7,7 +7,8 @@ import os
 '''                          DECLARATIONS
 <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 '''                               
-# This database dictionary will store user:password pairs encrypted
+
+'''database and pacemaker values store the username and password info, and pacemaker parameters, respectively'''
 database = {}
 pacemaker_values = {}
 user_info = []
@@ -15,12 +16,9 @@ user_info = []
 # Shift value is hardcoded here as a constant for use later in the encrypt/decrypt functions
 SHIFT = 2
 
-# Database dump location is going to be made a constant so it doesnt constantly need to be remade.
+# Database dump location and upload location is going to be made a constant so it doesnt constantly need to be remade.
 DUMP_LOCATION = os.getcwd() + '\database.json'
-print(DUMP_LOCATION)
-
 UPLOAD_LOCATION = os.getcwd() + '\SerialComm.json'
-print(UPLOAD_LOCATION)
 
 ''' DATABASE '''
 # Checks if the json file exists
@@ -56,10 +54,10 @@ class IO:
         # Used when STORING new user into database
 
         length = len(some_phrase)
-        Conv = ""
+        conv = ""
         for i in range(length):
-            Conv = Conv + chr(ord(some_phrase[i]) + SHIFT)
-        return Conv
+            conv = conv + chr(ord(some_phrase[i]) + SHIFT)
+        return conv
 
     @classmethod
     def decrypt(cls, some_phrase):
@@ -67,56 +65,50 @@ class IO:
         # Used when READING existing user from database
 
         length = len(some_phrase)
-        Conv = ""
+        conv = ""
         for i in range(length):
-            Conv = Conv + chr(ord(some_phrase[i]) - SHIFT)
-        return Conv
+            conv = conv + chr(ord(some_phrase[i]) - SHIFT)
+        return conv
 
     @classmethod
-    def dump(cls):
+    def dump(cls, path, data_dict):
         """
-        This function writes the current state of the user database to a json file. Having a local copy is very important
-        since this copy can be written to memory and accessed whether or not the DCM python script is running or not.
+        This function writes the current state of the user database to a json file. Having a local copy is very
+        important, since this copy can be written to memory and accessed whether or not the DCM python script is running
+        or not, and when the script reboots it remembers who has been registered.
 
         """
         # 'w+' mode is used to overwrite the previous database with the newest version.
-        with open(DUMP_LOCATION, 'w+') as dump_file:
-            json.dump(database, dump_file, indent=4, sort_keys=True)
-
-    @classmethod
-    def upload(cls):
-        """
-        This function writes the current state of the user database to a json file. Having a local copy is very important
-        since this copy can be written to memory and accessed whether or not the DCM python script is running or not.
-
-        """
-        # 'w+' mode is used to overwrite the previous database with the newest version.
-        with open(UPLOAD_LOCATION, 'w+') as dump_file:
-            json.dump(pacemaker_values, dump_file, indent=4, sort_keys=True)
+        with open(path, 'w+') as dump_file:
+            json.dump(data_dict, dump_file, indent=4, sort_keys=True)
 
 
-def create_user(username, password, object):
+def create_user(username, password, frame_class):
     """
     This function takes the desired username and password input into the two text boxes in the GUI and does some
     operations.
     It checks it against the existing database, which must be limited to 20 users, to see if it exists, and if not, will
     input it into the database.
-
+    Also takes a frame_class
     """
 
     # Encrypt both the password and the username and update the database.
     en_user = IO.encrypt(str(username.get()))
     en_pass = IO.encrypt(str(password.get()))
 
-    # Conditional will check our three conditions for adding to database: less than 10 entries and the user doesnt exist, and we have a valid password.
-
+    """
+    Conditional will check our three conditions for adding to database: 
+    less than 10 entries 
+    and the user doesnt exist,
+    and we have a valid password.
+    """
     if len(database.items()) < 10 and database.get(en_user) is None and len(
             en_pass) > 0:  # added no password case
         database.update({en_user: en_pass})
         print(database)  #########################################################TAKE OUT WHEN READY###############
-        IO.dump()
+        IO.dump(DUMP_LOCATION, database)
         # We passed an object through (master in this case)
-        object.switch_frame(Menu)
+        frame_class.switch_frame(Menu)
     elif database.get(en_user):
         print("Username already exists.")
         return
@@ -126,10 +118,9 @@ def create_user(username, password, object):
         print("Database is full")
 
 
-def login_test(username, password, object):
-    '''
-    Function takes text-variable version of username and password.
-    '''
+def login_test(username, password, frame_class):
+    """Function takes text-variable version of username and password, as well as frame class"""
+
     # Like in the create user function we will be using the encoded version
     en_user = IO.encrypt(str(username.get()))
     en_pass = IO.encrypt(str(password.get()))
@@ -137,28 +128,33 @@ def login_test(username, password, object):
     if (len(en_user) == 0) or (len(en_pass) == 0):
         print("Invalid credentials")
     elif database.get(en_user) == en_pass:
-        object.switch_frame(Menu)
+        frame_class.switch_frame(Menu)
     else:
         print("User does not exist")
     
 def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
-    pacemaker_values.update({"Mode":mode})
-    pacemaker_values.update({"Low_Limit":str(low)})
-    pacemaker_values.update({"Up_Limit":str(up)})
-    pacemaker_values.update({"A_Amp":str(AAmp)})
-    pacemaker_values.update({"V_Amp":str(VAmp)})
-    pacemaker_values.update({"A_PW":str(APW)})
-    pacemaker_values.update({"V_PW":str(VPW)})
-    pacemaker_values.update({"A_Sense":str(ASense)})
-    pacemaker_values.update({"V_Sense":str(VSense)})
-    pacemaker_values.update({"ARP":str(ARP)})
-    pacemaker_values.update({"VRP":str(VRP)})
-    IO.upload()
+    """
+    Neatly updates dictionary with pacemaker parameters as per requirements in documentation.
+    """
+    pacemaker_values.update({"Mode": mode})
+    pacemaker_values.update({"Low_Limit": str(low)})
+    pacemaker_values.update({"Up_Limit": str(up)})
+    pacemaker_values.update({"A_Amp": str(AAmp)})
+    pacemaker_values.update({"V_Amp": str(VAmp)})
+    pacemaker_values.update({"A_PW": str(APW)})
+    pacemaker_values.update({"V_PW": str(VPW)})
+    pacemaker_values.update({"A_Sense": str(ASense)})
+    pacemaker_values.update({"V_Sense": str(VSense)})
+    pacemaker_values.update({"ARP": str(ARP)})
+    pacemaker_values.update({"VRP": str(VRP)})
+    IO.dump(UPLOAD_LOCATION, pacemaker_values)
 
 
 '''                  Tkinter Windows & Interface
 <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 '''
+
+
 class SampleApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
@@ -173,29 +169,31 @@ class SampleApp(tk.Tk):
         self._frame = new_frame
         self._frame.pack()
 
+
 class StartUp(tk.Frame):
     def __init__(self, master):      
         tk.Frame.__init__(self, master)
         tk.Button(self, text="Login",
-                  command=lambda: master.switch_frame(Login)).pack(padx=10,pady=10)
+                  command=lambda: master.switch_frame(Login)).pack(padx=10, pady=10)
         tk.Button(self, text="Create User",
-                  command=lambda: master.switch_frame(CreateUser)).pack(padx=10,pady=10)
+                  command=lambda: master.switch_frame(CreateUser)).pack(padx=10, pady=10)
+
 
 class Login(tk.Frame):
     def __init__(self, master):
         v1 = tk.StringVar()
         v2 = tk.StringVar()
-        LOGIN = 0
+        login = 0
         tk.Frame.__init__(self, master)
         tk.Label(self, text="Enter your credentials").pack(side="top", fill="x", pady=10)
         tk.Label(self, text="Enter Username").pack()
         tk.Entry(self, textvariable=v1).pack()
         tk.Label(self, text="Enter Password").pack()
         tk.Entry(self, textvariable=v2).pack(padx=5)
-        tk.Button(self, text="Submit", command=lambda: login_test(v1,v2, master)).pack()
+        tk.Button(self, text="Submit", command=lambda: login_test(v1, v2, master)).pack()
         tk.Button(self, text="Return to start page",
                   command=lambda: master.switch_frame(StartUp)).pack()
-        if (LOGIN==1):
+        if login == 1:
             master.switch_frame(Menu)
 
 
@@ -215,7 +213,6 @@ class CreateUser(tk.Frame):
                   command=lambda: master.switch_frame(StartUp)).pack()
         
 
-        
 class Menu(tk.Frame):
     def __init__(self, master):      
         tk.Frame.__init__(self, master)
@@ -239,9 +236,9 @@ class Menu(tk.Frame):
         tabControl.add(VOOTab, text='VOO')
         tabControl.add(AAITab, text='AAI')
         tabControl.add(VVITab, text='VVI')
-        tabControl.pack(expand=1,side="top")
+        tabControl.pack(expand=1, side="top")
         
-        #AOO
+        # AOO
         row1 = ttk.Frame(AOOTab)
         row1.pack()
         row2 = ttk.Frame(AOOTab)
@@ -260,10 +257,10 @@ class Menu(tk.Frame):
         tk.Entry(row3, textvariable=A_Amp).pack(side="left", padx=5, pady=5)
         tk.Label(row4, text="Atrial Pulse Width").pack(side="left", padx=2, pady=5)
         tk.Entry(row4, textvariable=A_PW).pack(side="left", padx=5, pady=5)
-        tk.Button(row5, text="Submit", command=lambda :
+        tk.Button(row5, text="Submit", command=lambda:
                   update_info(1, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0, A_PW.get(), 0, 0, 0, 0, 0)).pack(side="bottom", pady=5)
 
-        #VOO
+        # VOO
         row1 = ttk.Frame(VOOTab)
         row1.pack()
         row2 = ttk.Frame(VOOTab)
@@ -282,10 +279,10 @@ class Menu(tk.Frame):
         tk.Entry(row3, textvariable=V_Amp).pack(side="left", padx=5, pady=5)
         tk.Label(row4, text="Ventricular Pulse Width").pack(side="left", padx=5, pady=5)
         tk.Entry(row4, textvariable=V_PW).pack(side="left", padx=5, pady=5)
-        tk.Button(row5, text="Submit", command=lambda :
+        tk.Button(row5, text="Submit", command=lambda:
                   update_info(2, Low_Limit.get(), Up_Limit.get(), 0, V_Amp.get(), 0, V_PW.get(), 0, 0, 0, 0)).pack(side="bottom", pady=5)
 
-        #AAI
+        # AAI
         row1 = ttk.Frame(AAITab)
         row1.pack()
         row2 = ttk.Frame(AAITab)
@@ -312,10 +309,10 @@ class Menu(tk.Frame):
         tk.Entry(row5, textvariable=A_Sense).pack(side="left", padx=5, pady=5)
         tk.Label(row6, text="ARP").pack(side="left", padx=37, pady=5)
         tk.Entry(row6, textvariable=ARP).pack(side="left", padx=5, pady=5)
-        tk.Button(row7, text="Submit", command=lambda :
+        tk.Button(row7, text="Submit", command=lambda:
                   update_info(3, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0, A_PW.get(), 0, A_Sense.get(), 0, ARP.get(), 0)).pack(side="bottom", pady=5)
 
-        #VVI
+        # VVI
         row1 = ttk.Frame(VVITab)
         row1.pack()
         row2 = ttk.Frame(VVITab)
@@ -342,7 +339,7 @@ class Menu(tk.Frame):
         tk.Entry(row5, textvariable=V_Sense).pack(side="left", padx=5, pady=5)
         tk.Label(row6, text="VRP").pack(side="left", padx=52, pady=5)
         tk.Entry(row6, textvariable=VRP).pack(side="left", padx=5, pady=5)
-        tk.Button(row7, text="Submit", command=lambda :
+        tk.Button(row7, text="Submit", command=lambda:
                   update_info(4, Low_Limit.get(), Up_Limit.get(), 0, V_Amp.get(), 0, A_PW.get(), 0, V_Sense.get(), 0, VRP.get())).pack(side="bottom", pady=5)
         
 
