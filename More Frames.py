@@ -137,17 +137,58 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
     Neatly updates dictionary with pacemaker parameters as per requirements in documentation.
     """
     pacemaker_values.update({"Mode": mode})
-    pacemaker_values.update({"Low_Limit": str(low)})
+    if (float(up) > 150):
+        up = 150
+    elif (float(up) < 75):
+        up = 75
     pacemaker_values.update({"Up_Limit": str(up)})
+    if (float(low) > float(up)):
+        low = 50
+    elif (float(low) < 50):
+        low = 50
+    pacemaker_values.update({"Low_Limit": str(low)})
+    if (float(AAmp) > 5):
+        AAmp = 5
+    elif (float(AAmp) < 0.5):
+        AAmp = 0.5
     pacemaker_values.update({"A_Amp": str(AAmp)})
+    if (float(VAmp) > 5):
+        VAmp = 5
+    elif (float(VAmp) < 0.5):
+        VAmp = 0.5
     pacemaker_values.update({"V_Amp": str(VAmp)})
+    if (float(APW) > 10):
+        APW = 10
+    elif (float(APW) < 1):
+        APW = 1
     pacemaker_values.update({"A_PW": str(APW)})
+    if (float(VPW) > 10):
+        VPW = 10
+    elif (float(VPW) < 1):
+        VPW = 1
     pacemaker_values.update({"V_PW": str(VPW)})
+    if (float(ASense) > 10):
+        ASense = 10
+    elif (float(ASense) < 0.25):
+        ASense = 0.25
     pacemaker_values.update({"A_Sense": str(ASense)})
+    if (float(VSense) > 10):
+        VSense = 10
+    elif (float(VSense) < 0.25):
+        VSense = 0.25
     pacemaker_values.update({"V_Sense": str(VSense)})
+    if (float(ARP) > 500):
+        ARP = 500
+    elif (float(ARP) < 150):
+        ARP = 150
     pacemaker_values.update({"ARP": str(ARP)})
+    if (float(VRP) > 500):
+        VRP = 500
+    elif (float(VRP) < 150):
+        VRP = 150
     pacemaker_values.update({"VRP": str(VRP)})
     IO.dump(UPLOAD_LOCATION, pacemaker_values)
+    print("Pacemaker Values Updated Successfully")
 
 
 '''                  Tkinter Windows & Interface
@@ -258,7 +299,7 @@ class Menu(tk.Frame):
         tk.Label(row4, text="Atrial Pulse Width").pack(side="left", padx=2, pady=5)
         tk.Entry(row4, textvariable=A_PW).pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
-                  update_info(1, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0, A_PW.get(), 0, 0, 0, 0, 0)).pack(side="bottom", pady=5)
+                  update_info(1, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0.5, A_PW.get(), 1, 0.25, 0.25, 150, 150)).pack(side="bottom", pady=5)
 
         # VOO
         row1 = ttk.Frame(VOOTab)
@@ -280,7 +321,7 @@ class Menu(tk.Frame):
         tk.Label(row4, text="Ventricular Pulse Width").pack(side="left", padx=5, pady=5)
         tk.Entry(row4, textvariable=V_PW).pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
-                  update_info(2, Low_Limit.get(), Up_Limit.get(), 0, V_Amp.get(), 0, V_PW.get(), 0, 0, 0, 0)).pack(side="bottom", pady=5)
+                  update_info(2, Low_Limit.get(), Up_Limit.get(), 0.5, V_Amp.get(), 1, V_PW.get(), 0.25, 0.25, 150, 150)).pack(side="bottom", pady=5)
 
         # AAI
         row1 = ttk.Frame(AAITab)
@@ -310,7 +351,7 @@ class Menu(tk.Frame):
         tk.Label(row6, text="ARP").pack(side="left", padx=37, pady=5)
         tk.Entry(row6, textvariable=ARP).pack(side="left", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
-                  update_info(3, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0, A_PW.get(), 0, A_Sense.get(), 0, ARP.get(), 0)).pack(side="bottom", pady=5)
+                  update_info(3, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0.5, A_PW.get(), 1, A_Sense.get(), 0.25, ARP.get(), 150)).pack(side="bottom", pady=5)
 
         # VVI
         row1 = ttk.Frame(VVITab)
@@ -340,7 +381,7 @@ class Menu(tk.Frame):
         tk.Label(row6, text="VRP").pack(side="left", padx=52, pady=5)
         tk.Entry(row6, textvariable=VRP).pack(side="left", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
-                  update_info(4, Low_Limit.get(), Up_Limit.get(), 0, V_Amp.get(), 0, A_PW.get(), 0, V_Sense.get(), 0, VRP.get())).pack(side="bottom", pady=5)
+                  update_info(4, Low_Limit.get(), Up_Limit.get(), 0.5, V_Amp.get(), 1, A_PW.get(), 0.25, V_Sense.get(), 150, VRP.get())).pack(side="bottom", pady=5)
         
 
 if __name__ == "__main__":
