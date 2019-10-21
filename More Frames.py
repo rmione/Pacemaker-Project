@@ -105,7 +105,6 @@ def create_user(username, password, frame_class):
     if len(database.items()) < 10 and database.get(en_user) is None and len(
             en_pass) > 0:  # added no password case
         database.update({en_user: en_pass})
-        print(database)  #########################################################TAKE OUT WHEN READY###############
         IO.dump(DUMP_LOCATION, database)
         # We passed an object through (master in this case)
         frame_class.switch_frame(Menu)
@@ -352,7 +351,7 @@ class Menu(tk.Frame):
         tk.Entry(row6, textvariable=ARP).pack(side="left", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
                   update_info(3, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0.5, A_PW.get(), 1, A_Sense.get(), 0.25, ARP.get(), 150)).pack(side="bottom", pady=5)
-
+        
         # VVI
         row1 = ttk.Frame(VVITab)
         row1.pack()
@@ -387,3 +386,4 @@ class Menu(tk.Frame):
 if __name__ == "__main__":
     app = SampleApp()
     app.mainloop()
+    
