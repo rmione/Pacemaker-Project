@@ -135,60 +135,72 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
     """
     Neatly updates dictionary with pacemaker parameters as per requirements in documentation.
     """
-    pacemaker_values.update({"Mode": mode})
-    if (up > 150):
-        up = 150
-    elif (up < 75):
-        up = 75
-    pacemaker_values.update({"Up_Limit": str(up)})
-    if (low > up):
-        low = 50
-    elif (low < 50):
-        low = 50
-    pacemaker_values.update({"Low_Limit": str(low)})
-    if (AAmp > 5):
-        AAmp = 5
-    elif (AAmp < 0.5):
-        AAmp = 0.5
-    pacemaker_values.update({"A_Amp": str(AAmp)})
-    if (VAmp > 5):
-        VAmp = 5
-    elif (VAmp < 0.5):
-        VAmp = 0.5
-    pacemaker_values.update({"V_Amp": str(VAmp)})
-    if (APW > 10):
-        APW = 10
-    elif (APW < 1):
-        APW = 1
-    pacemaker_values.update({"A_PW": str(APW)})
-    if (VPW > 10):
-        VPW = 10
-    elif (VPW < 1):
-        VPW = 1
-    pacemaker_values.update({"V_PW": str(VPW)})
-    if (ASense > 10):
-        ASense = 10
-    elif (ASense < 0.25):
-        ASense = 0.25
-    pacemaker_values.update({"A_Sense": str(ASense)})
-    if (VSense > 10):
-        VSense = 10
-    elif (VSense < 0.25):
-        VSense = 0.25
-    pacemaker_values.update({"V_Sense": str(VSense)})
-    if (ARP > 500):
-        ARP = 500
-    elif (ARP < 150):
-        ARP = 150
-    pacemaker_values.update({"ARP": str(ARP)})
-    if (VRP > 500):
-        VRP = 500
-    elif (VRP < 150):
-        VRP = 150
-    pacemaker_values.update({"VRP": str(VRP)})
-    IO.dump(UPLOAD_LOCATION, pacemaker_values)
-    print("Pacemaker Values Updated Successfully")
 
+    # todo: typecast all values and change all inputs in all modes to just StringVars
+    # todo: typecast and check in this fxn that the typecasted input is valid (i.e: not "5a5")
+    # todo: use a try-except block to check that all parameters are good
+    # todo: maybe put into the documentation that we may want to use a slider with accepted values for next implementation
+    try:
+        if int(mode) and float(low) and float(up) and float(AAmp) and float(VAmp) and float(APW) and float(VPW) and float(ASense) and float(VSense) and float(ARP) and float(VRP):
+            pass
+        
+
+        pacemaker_values.update({"Mode": mode})
+        if float(up) > 150:
+            up = 150
+        elif float(up) < 75:
+            up = 75
+        pacemaker_values.update({"Up_Limit": float(up)})
+        if float(low) > up:
+            low = 50
+        elif float(low) < 50:
+            low = 50
+        pacemaker_values.update({"Low_Limit": float(low)})
+        if float(AAmp) > 5:
+            AAmp = 5
+        elif float(AAmp) < 0.5:
+            AAmp = 0.5
+        pacemaker_values.update({"A_Amp": float(AAmp)})
+        if float(VAmp) > 5:
+            VAmp = 5
+        elif float(VAmp) < 0.5:
+            VAmp = 0.5
+        pacemaker_values.update({"V_Amp": float(VAmp)})
+        if float(APW) > 10:
+            APW = 10
+        elif float(APW) < 1:
+            APW = 1
+        pacemaker_values.update({"A_PW": float(APW)})
+        if float(VPW) > 10:
+            VPW = 10
+        elif float(VPW) < 1:
+            VPW = 1
+        pacemaker_values.update({"V_PW": float(VPW)})
+        if float(ASense) > 10:
+            ASense = 10
+        elif float(ASense) < 0.25:
+            ASense = 0.25
+        pacemaker_values.update({"A_Sense": float(ASense)})
+        if float(VSense) > 10:
+            VSense = 10
+        elif float(VSense) < 0.25:
+            VSense = 0.25
+        pacemaker_values.update({"V_Sense": float(VSense)})
+        if float(ARP) > 500:
+            ARP = 500
+        elif float(ARP) < 150:
+            ARP = 150
+        pacemaker_values.update({"ARP": float(ARP)})
+        if float(VRP) > 500:
+            VRP = 500
+        elif float(VRP) < 150:
+            VRP = 150
+        pacemaker_values.update({"VRP": float(VRP)})
+        IO.dump(UPLOAD_LOCATION, pacemaker_values)
+        print("Pacemaker Values Updated Successfully")
+
+    except:
+        print("Invalid info! Re enter")
 
 '''                  Tkinter Windows & Interface
 <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
@@ -256,16 +268,16 @@ class CreateUser(tk.Frame):
 class Menu(tk.Frame):
     def __init__(self, master):      
         tk.Frame.__init__(self, master)
-        Low_Limit = tk.DoubleVar()
-        Up_Limit = tk.DoubleVar()
-        A_Amp = tk.DoubleVar()
-        V_Amp = tk.DoubleVar()
-        A_PW = tk.DoubleVar()
-        V_PW = tk.DoubleVar()
-        A_Sense = tk.DoubleVar()
-        V_Sense = tk.DoubleVar()
-        ARP = tk.DoubleVar()
-        VRP = tk.DoubleVar()
+        Low_Limit = tk.StringVar()
+        Up_Limit = tk.StringVar()
+        A_Amp = tk.StringVar()
+        V_Amp = tk.StringVar()
+        A_PW = tk.StringVar()
+        V_PW = tk.StringVar()
+        A_Sense = tk.StringVar()
+        V_Sense = tk.StringVar()
+        ARP = tk.StringVar()
+        VRP = tk.StringVar()
         
         tabControl = ttk.Notebook(self)
         AOOTab = ttk.Frame(tabControl)
@@ -289,6 +301,7 @@ class Menu(tk.Frame):
         row4.pack()
         row5 = ttk.Frame(AOOTab)
         row5.pack()
+        handler = (self.register(validate_input), '%s')
         tk.Label(row1, text="Lower Rate Limit").pack(side="left", padx=5, pady=5)
         tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
         tk.Label(row2, text="Upper Rate Limit").pack(side="left", padx=5, pady=5)
