@@ -4,6 +4,7 @@ from tkinter import ttk
 import json
 import os
 
+
 '''                          DECLARATIONS
 <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 '''                               
@@ -141,9 +142,12 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
     # todo: use a try-except block to check that all parameters are good
     # todo: maybe put into the documentation that we may want to use a slider with accepted values for next implementation
     try:
+        """
+        This conditional checks that all the strings passed in as parameters convert properly. It is inside a try-except 
+        to catch a faulty conversion
+        """
         if int(mode) and float(low) and float(up) and float(AAmp) and float(VAmp) and float(APW) and float(VPW) and float(ASense) and float(VSense) and float(ARP) and float(VRP):
             pass
-        
 
         pacemaker_values.update({"Mode": mode})
         if float(up) > 150:
@@ -199,8 +203,14 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
         IO.dump(UPLOAD_LOCATION, pacemaker_values)
         print("Pacemaker Values Updated Successfully")
 
-    except:
+    except ValueError as e:
+
+        """
+        In this situation, we have some invalid input, and it didn't convert properly. 
+        
+        """
         print("Invalid info! Re enter")
+        print("Error printout here: " + str(e))
 
 '''                  Tkinter Windows & Interface
 <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
@@ -301,7 +311,7 @@ class Menu(tk.Frame):
         row4.pack()
         row5 = ttk.Frame(AOOTab)
         row5.pack()
-        handler = (self.register(validate_input), '%s')
+
         tk.Label(row1, text="Lower Rate Limit").pack(side="left", padx=5, pady=5)
         tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
         tk.Label(row2, text="Upper Rate Limit").pack(side="left", padx=5, pady=5)
