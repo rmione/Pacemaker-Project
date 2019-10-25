@@ -104,7 +104,7 @@ def create_user(username, password, frame_class):
     and we have a valid password.
     """
     if len(database.items()) < 10 and database.get(en_user) is None and len(
-            en_pass) > 0:  # added no password case
+            en_pass) > 0 and len(en_user) > 0:  # added no password case
         database.update({en_user: en_pass})
         IO.dump(DUMP_LOCATION, database)
         # We passed an object through (master in this case)
@@ -112,6 +112,8 @@ def create_user(username, password, frame_class):
     elif database.get(en_user):
         print("Username already exists.")
         return
+    elif len(en_user) == 0:
+        print("Please enter username")
     elif len(en_pass) == 0:
         print("Please enter password")
     else:
