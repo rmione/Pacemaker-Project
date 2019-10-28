@@ -153,7 +153,7 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
         elif float(up) < 75:
             up = 75
         pacemaker_values.update({"Up_Limit": float(up)})
-        if float(low) > up:
+        if float(low) > float(up):
             low = 50
         elif float(low) < 50:
             low = 50
