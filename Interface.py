@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import json
 import os
+from tkinter import messagebox
 from MiscFunctions import *
 
 ''' ------------------------------------------------------ '''
@@ -32,13 +33,17 @@ def create_user(username, password, frame_class):
         frame_class.switch_frame(Menu)
     elif database.get(en_user):
         print("Username already exists.")
+        messagebox.showinfo("Username already exists.", "Please login with this user or attempt to create a new one.")
         return
     elif len(en_user) == 0:
         print("Please enter username")
+
+        messagebox.showinfo("Please enter username", "Enter a valid username.")
     elif len(en_pass) == 0:
         print("Please enter password")
     else:
         print("Database is full")
+        messagebox.showinfo("Database is full", "The database cannot accept any more users.")
 
 
 def login_test(username, password, frame_class):
@@ -50,10 +55,12 @@ def login_test(username, password, frame_class):
 
     if (len(en_user) == 0) or (len(en_pass) == 0):
         print("Invalid credentials")
+        messagebox.showinfo("Invalid credentials", "Either your username or password are invalid, try again.")
     elif database.get(en_user) == en_pass:
         frame_class.switch_frame(Menu)
     else:
         print("User does not exist")
+        messagebox.showinfo("User does not exist", "This user does not exist in the database, try again.")
 
 
 ''' ============================================================= '''
