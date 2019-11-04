@@ -74,8 +74,9 @@ class SampleApp(tk.Tk):
 
 
 class StartUp(tk.Frame):
-    def __init__(self, master):      
+    def __init__(self, master):
         tk.Frame.__init__(self, master)
+        master.resizable(False, False)
         tk.Label(self, text="Welcome").pack()
         tk.Button(self, text="Login",
                   command=lambda: master.switch_frame(Login)).pack(padx=10, pady=10)
