@@ -69,7 +69,7 @@ class SampleApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self._frame = None
-        self.switch_frame(StartUp)
+        self.switch_frame(Menu)
 
     def switch_frame(self, frame_class):
         """Destroys current frame and replaces it with a new one."""
@@ -175,16 +175,22 @@ class Menu(tk.Frame):
         row5 = ttk.Frame(AOOTab)
         row5.pack()
 
+        
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=5, pady=5)
-        tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
+        AOOLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        AOOLRL.pack(side="left", padx=5, pady=5)
         tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=5, pady=5)
-        tk.Entry(row2, textvariable=Up_Limit).pack(side="left", padx=5, pady=5)
+        AOOURL = tk.Scale(row2, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        AOOURL.pack(side="left", padx=5, pady=5)
         tk.Label(row3, text="Atrial Amplitude(V)").pack(side="left", padx=15, pady=5)
-        tk.Entry(row3, textvariable=A_Amp).pack(side="left", padx=5, pady=5)
+        AOOAA = tk.Scale(row3, from_=0.5, to=5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        AOOAA.pack(side="left", padx=5, pady=5)
         tk.Label(row4, text="Atrial Pulse Width (ms)").pack(side="left", padx=6, pady=5)
-        tk.Entry(row4, textvariable=A_PW).pack(side="left", padx=5, pady=5)
+        AOOPW = tk.Scale(row4, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
+        AOOPW.pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
                   update_info(1, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0.5, A_PW.get(), 1, 0.25, 0.25, 150, 150)).pack(side="bottom", pady=5)
+
 
         # VOO
         row1 = ttk.Frame(VOOTab)
@@ -198,13 +204,17 @@ class Menu(tk.Frame):
         row5 = ttk.Frame(VOOTab)
         row5.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=22, pady=5)
-        tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
+        VOOLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        VOOLRL.pack(side="left", padx=5, pady=5)
         tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=22, pady=5)
-        tk.Entry(row2, textvariable=Up_Limit).pack(side="left", padx=5, pady=5)
+        VOOURL = tk.Scale(row2, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        VOOURL.pack(side="left", padx=5, pady=5)
         tk.Label(row3, text="Ventricular Amplitude (V)").pack(side="left", padx=17, pady=5)
-        tk.Entry(row3, textvariable=V_Amp).pack(side="left", padx=5, pady=5)
+        VOOAA = tk.Scale(row3, from_=0.5, to=5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        VOOAA.pack(side="left", padx=5, pady=5)
         tk.Label(row4, text="Ventricular Pulse Width (ms)").pack(side="left", padx=10, pady=5)
-        tk.Entry(row4, textvariable=V_PW).pack(side="left", padx=5, pady=5)
+        VOOPW = tk.Scale(row4, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
+        VOOPW.pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
                   update_info(2, Low_Limit.get(), Up_Limit.get(), 0.5, V_Amp.get(), 1, V_PW.get(), 0.25, 0.25, 150, 150)).pack(side="bottom", pady=5)
 
@@ -224,17 +234,23 @@ class Menu(tk.Frame):
         row7 = ttk.Frame(AAITab)
         row7.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=5, pady=5)
-        tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
+        AAILRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        AAILRL.pack(side="left", padx=5, pady=5)
         tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=5, pady=5)
-        tk.Entry(row2, textvariable=Up_Limit).pack(side="left", padx=5, pady=5)
+        AAIURL = tk.Scale(row2, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        AAIURL.pack(side="left", padx=5, pady=5)
         tk.Label(row3, text="Atrial Amplitude (V)").pack(side="left", padx=15, pady=5)
-        tk.Entry(row3, textvariable=A_Amp).pack(side="left", padx=5, pady=5)
+        AAIAA = tk.Scale(row3, from_=0.5, to=5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        AAIAA.pack(side="left", padx=5, pady=5)
         tk.Label(row4, text="Atrial Pulse Width (ms)").pack(side="left", padx=7, pady=5)
-        tk.Entry(row4, textvariable=A_PW).pack(side="left", padx=5, pady=5)
+        AAIPW = tk.Scale(row4, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
+        AAIPW.pack(side="left", padx=5, pady=5)
         tk.Label(row5, text="Atrial Sensitivity (mV)").pack(side="left", padx=11, pady=5)
-        tk.Entry(row5, textvariable=A_Sense).pack(side="left", padx=5, pady=5)
+        AAIAS = tk.Scale(row5, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
+        AAIAS.pack(side="left", padx=5, pady=5)
         tk.Label(row6, text="ARP (ms)").pack(side="left", padx=43, pady=5)
-        tk.Entry(row6, textvariable=ARP).pack(side="left", padx=5, pady=5)
+        AAIARP = tk.Scale(row6, from_=150, to=500, length=600, tickinterval=20, orient=tk.HORIZONTAL)
+        AAIARP.pack(side="left", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
                   update_info(3, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0.5, A_PW.get(), 1, A_Sense.get(), 0.25, ARP.get(), 150)).pack(side="bottom", pady=5)
         
