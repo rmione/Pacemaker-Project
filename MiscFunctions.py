@@ -88,59 +88,30 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
         if int(mode) and float(low) and float(up) and float(AAmp) and float(VAmp) and float(APW) and float(VPW) and float(ASense) and float(VSense) and float(ARP) and float(VRP):
             pass
 
-        pacemaker_values.update({"Mode": mode})
-        if float(up) > 150:
-            up = 150
-        elif float(up) < 75:
-            up = 75
-        pacemaker_values.update({"Up_Limit": float(up)})
+        UpdateMsg = ""            
+                
         if float(low) > float(up):
             low = 50
+            UpdateMsg = UpdateMsg + "Lower Rate Limit Fixed to 50ppm \n"
         elif float(low) < 50:
             low = 50
+        pacemaker_values.update({"Mode": mode})
+        pacemaker_values.update({"Up_Limit": float(up)})
         pacemaker_values.update({"Low_Limit": float(low)})
-        if float(AAmp) > 5:
-            AAmp = 5
-        elif float(AAmp) < 0.5:
-            AAmp = 0.5
         pacemaker_values.update({"A_Amp": float(AAmp)})
-        if float(VAmp) > 5:
-            VAmp = 5
-        elif float(VAmp) < 0.5:
-            VAmp = 0.5
         pacemaker_values.update({"V_Amp": float(VAmp)})
-        if float(APW) > 10:
-            APW = 10
-        elif float(APW) < 1:
-            APW = 1
         pacemaker_values.update({"A_PW": float(APW)})
-        if float(VPW) > 10:
-            VPW = 10
-        elif float(VPW) < 1:
-            VPW = 1
         pacemaker_values.update({"V_PW": float(VPW)})
-        if float(ASense) > 10:
-            ASense = 10
-        elif float(ASense) < 0.25:
-            ASense = 0.25
         pacemaker_values.update({"A_Sense": float(ASense)})
-        if float(VSense) > 10:
-            VSense = 10
-        elif float(VSense) < 0.25:
-            VSense = 0.25
         pacemaker_values.update({"V_Sense": float(VSense)})
-        if float(ARP) > 500:
-            ARP = 500
-        elif float(ARP) < 150:
-            ARP = 150
         pacemaker_values.update({"ARP": float(ARP)})
-        if float(VRP) > 500:
-            VRP = 500
-        elif float(VRP) < 150:
-            VRP = 150
         pacemaker_values.update({"VRP": float(VRP)})
         IO.dump(UPLOAD_LOCATION, pacemaker_values)
-        print("Pacemaker Values Updated Successfully")
+        UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
+        print(UpdateMsg)
+        
+        
+         
 
     except ValueError as e:
 
