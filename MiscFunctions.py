@@ -18,7 +18,7 @@ UPLOAD_LOCATION = os.getcwd() + '\SerialComm.json'
 ''' DATABASE '''
 # Checks if the json file exists
 if os.path.exists(DUMP_LOCATION):
-    # if it exists, load in that database as the current database. Now it has memory
+    # if it exists, load in that database as the current database.
     with open(DUMP_LOCATION) as f:
         database = json.load(f)
 else:
@@ -28,7 +28,7 @@ else:
 ''' PACEMAKER VALUES '''
 # Checks if the json file exists
 if os.path.exists(UPLOAD_LOCATION):
-    # if it exists, load in that database as the current database. Now it has memory
+    # if it exists, load in that database as the current database.
     with open(UPLOAD_LOCATION) as f:
         pacemaker_values = json.load(f)
 else:
@@ -60,7 +60,6 @@ class IO:
         for i in range(length):
             conv = conv + chr(ord(some_phrase[i]) - SHIFT)
         return conv
-
 
     @classmethod
     def dump(cls, path, data_dict):
@@ -109,17 +108,15 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
         IO.dump(UPLOAD_LOCATION, pacemaker_values)
         UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
         print(UpdateMsg)
+        messagebox.showinfo("Error, invalid parameters", UpdateMsg)
         
         
-         
-
     except ValueError as e:
 
         """
         In this situation, we have some invalid input, and it didn't convert properly. 
         
         """
-        print("Invalid info! Re enter")
-        print("Error printout here: " + str(e))
+        messagebox.showinfo("Error", "Invalid info! Re enter")
 
 
