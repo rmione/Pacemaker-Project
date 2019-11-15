@@ -74,7 +74,7 @@ class IO:
             json.dump(data_dict, dump_file, indent=4, sort_keys=True)
 
     
-def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
+def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, PVARP, FAVD):
     """
     Neatly updates dictionary with pacemaker parameters as per requirements in documentation.
     """
@@ -84,7 +84,7 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
         This conditional checks that all the strings passed in as parameters convert properly. It is inside a try-except 
         to catch a faulty conversion
         """
-        if int(mode) and float(low) and float(up) and float(AAmp) and float(VAmp) and float(APW) and float(VPW) and float(ASense) and float(VSense) and float(ARP) and float(VRP):
+        if int(mode) and float(low) and float(up) and float(AAmp) and float(VAmp) and float(APW) and float(VPW) and float(ASense) and float(VSense) and float(ARP) and float(VRP) and int(MaxSense) and int(PVARP) and int(FAVD):
             pass
 
         UpdateMsg = ""            
@@ -105,10 +105,13 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
         pacemaker_values.update({"V_Sense": float(VSense)})
         pacemaker_values.update({"ARP": float(ARP)})
         pacemaker_values.update({"VRP": float(VRP)})
+        pacemaker_values.update({"Max_Sense": int(MaxSense)})
+        pacemaker_values.update({"PVARP": int(PVARP)})
+        pacemaker_values.update({"FAVD": int(FAVD)})
         IO.dump(UPLOAD_LOCATION, pacemaker_values)
         UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
         print(UpdateMsg)
-        messagebox.showinfo("Error, invalid parameters", UpdateMsg)
+        messagebox.showinfo("Pacemaker Message", UpdateMsg)
         
         
     except ValueError as e:
