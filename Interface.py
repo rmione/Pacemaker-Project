@@ -17,6 +17,7 @@ def create_user(username, password, frame_class):
     Also takes a frame_class
     """
 
+    global UserID
     # Encrypt both the password and the username and update the database.
     en_user = IO.encrypt(str(username.get()))
     UserID = str(username.get())
@@ -52,6 +53,7 @@ def create_user(username, password, frame_class):
 def login_test(username, password, frame_class):
     """Function takes text-variable version of username and password, as well as frame class"""
 
+    global UserID
     # Like in the create user function we will be using the encoded version
     en_user = IO.encrypt(str(username.get()))
     UserID = str(username.get())
@@ -73,7 +75,7 @@ class SampleApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self._frame = None
-        self.switch_frame(Menu)
+        self.switch_frame(StartUp)
 
     def switch_frame(self, frame_class):
         """Destroys current frame and replaces it with a new one."""
@@ -193,7 +195,7 @@ class Menu(tk.Frame):
         AOOPW = tk.Scale(row4, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         AOOPW.pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
-                  update_info(1, AOOLRL.get(), AOOURL.get(), AOOAA.get(), 0, AOOPW.get(), 0, 0, 0, 0, 0, 0, 0, 0)).pack(side="bottom", pady=5)
+                  update_info(1, AOOLRL.get(), AOOURL.get(), AOOAA.get(), 0, AOOPW.get(), 0, 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
         tk.Label(row6, text=UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row6, text=' ').pack(side="left", padx=325, pady=5)
 
@@ -223,7 +225,7 @@ class Menu(tk.Frame):
         VOOPW = tk.Scale(row4, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         VOOPW.pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
-                  update_info(2, VOOLRL.get(), VOOURL.get(), 0, VOOVA.get(), 1, VOOPW.get(), 0, 0, 0, 0, 0, 0, 0)).pack(side="bottom", pady=5)
+                  update_info(2, VOOLRL.get(), VOOURL.get(), 0, VOOVA.get(), 1, VOOPW.get(), 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
         tk.Label(row6, text=UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row6, text=' ').pack(side="left", padx=325, pady=5)
 
@@ -263,7 +265,7 @@ class Menu(tk.Frame):
         AAIARP = tk.Scale(row6, from_=150, to=500, length=600, tickinterval=20, orient=tk.HORIZONTAL)
         AAIARP.pack(side="left", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
-                  update_info(3, AAILRL.get(), AAIURL.get(), AAIAA.get(), 0, AAIPW.get(), 0, AAIAS.get(), 0, AAIARP.get(), 0, 0, 0, 0)).pack(side="bottom", pady=5)
+                  update_info(3, AAILRL.get(), AAIURL.get(), AAIAA.get(), 0, AAIPW.get(), 0, AAIAS.get(), 0, AAIARP.get(), 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
         tk.Label(row8, text=UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row8, text=' ').pack(side="left", padx=325, pady=5)
         
@@ -303,7 +305,7 @@ class Menu(tk.Frame):
         VVIVRP = tk.Scale(row6, from_=150, to=500, length=600, tickinterval=20, orient=tk.HORIZONTAL)
         VVIVRP.pack(side="left", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
-                  update_info(4, VVILRL.get(), VVIURL.get(), 0, VVIVA.get(), 0, VVIPW.get(), 0, VVIVS.get(), 0, VVIVRP.get(), 0, 0, 0)).pack(side="bottom", pady=5)
+                  update_info(4, VVILRL.get(), VVIURL.get(), 0, VVIVA.get(), 0, VVIPW.get(), 0, VVIVS.get(), 0, VVIVRP.get(), 0, 0, 0, UserID)).pack(side="bottom", pady=5)
         tk.Label(row8, text=UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row8, text=' ').pack(side="left", padx=325, pady=5)
 
@@ -344,7 +346,7 @@ class Menu(tk.Frame):
         DOOVPW = tk.Scale(row6, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         DOOVPW.pack(side="right", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
-                  update_info(5, DOOLRL.get(), DOOURL.get(), DOOAA.get(), DOOVA.get(), DOOAPW.get(), DOOVPW.get(), 0, 0, 0, 0, 0, 0, 0)).pack(side="bottom", pady=5)
+                  update_info(5, DOOLRL.get(), DOOURL.get(), DOOAA.get(), DOOVA.get(), DOOAPW.get(), DOOVPW.get(), 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
         tk.Label(row8, text=UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row8, text=' ').pack(side="left", padx=325, pady=5)
 
@@ -380,7 +382,7 @@ class Menu(tk.Frame):
         AOORAPW = tk.Scale(row5, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         AOORAPW.pack(side="right", padx=5, pady=5)
         tk.Button(row6, text="Submit", command=lambda:
-                  update_info(6, AOORLRL.get(), AOORURL.get(), AOORAA.get(), 0, AOORAPW.get(), 0, 0, 0, 0, 0, AOORMSR.get(), 0, 0)).pack(side="bottom", pady=5)
+                  update_info(6, AOORLRL.get(), AOORURL.get(), AOORAA.get(), 0, AOORAPW.get(), 0, 0, 0, 0, 0, AOORMSR.get(), 0, 0, UserID)).pack(side="bottom", pady=5)
         tk.Label(row7, text=UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row7, text=' ').pack(side="left", padx=325, pady=5)
 
@@ -416,7 +418,7 @@ class Menu(tk.Frame):
         VOORVPW = tk.Scale(row5, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         VOORVPW.pack(side="right", padx=5, pady=5)
         tk.Button(row6, text="Submit", command=lambda:
-                  update_info(7, VOORLRL.get(), VOORURL.get(), 0, VOORVA.get(), 0, VOORVPW.get(), 0, 0, 0, 0, VOORMSR.get(), 0, 0)).pack(side="bottom", pady=5)
+                  update_info(7, VOORLRL.get(), VOORURL.get(), 0, VOORVA.get(), 0, VOORVPW.get(), 0, 0, 0, 0, VOORMSR.get(), 0, 0, UserID)).pack(side="bottom", pady=5)
         tk.Label(row7, text=UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row7, text=' ').pack(side="left", padx=325, pady=5)
 
@@ -467,7 +469,7 @@ class Menu(tk.Frame):
         AAIRPVARP = tk.Scale(row8, from_=150, to=500, length=600, tickinterval=20, orient=tk.HORIZONTAL)
         AAIRPVARP.pack(side="right", padx=5, pady=5)
         tk.Button(row9, text="Submit", command=lambda:
-                  update_info(8, AAIRLRL.get(), AAIRURL.get(), AAIRAA.get(), 0, AAIRAPW.get(), 0, AAIRAS.get(), 0, 0, 0, AAIRMSR.get(), AAIRPVARP.get(), 0)).pack(side="bottom", pady=5)
+                  update_info(8, AAIRLRL.get(), AAIRURL.get(), AAIRAA.get(), 0, AAIRAPW.get(), 0, AAIRAS.get(), 0, 0, 0, AAIRMSR.get(), AAIRPVARP.get(), 0, UserID)).pack(side="bottom", pady=5)
         tk.Label(row10, text=UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row10, text=' ').pack(side="left", padx=325, pady=5)
 
@@ -513,7 +515,7 @@ class Menu(tk.Frame):
         VVIRVRP = tk.Scale(row7, from_=150, to=500, length=600, tickinterval=20, orient=tk.HORIZONTAL)
         VVIRVRP.pack(side="right", padx=5, pady=5)
         tk.Button(row8, text="Submit", command=lambda:
-                  update_info(9, VVIRLRL.get(), VVIRURL.get(), 0, VVIRVA.get(), 0, VVIRVPW.get(), 0, VVIRVS.get(), 0, VVIRVRP.get(), VVIRMSR.get(), 0, 0)).pack(side="bottom", pady=5)
+                  update_info(9, VVIRLRL.get(), VVIRURL.get(), 0, VVIRVA.get(), 0, VVIRVPW.get(), 0, VVIRVS.get(), 0, VVIRVRP.get(), VVIRMSR.get(), 0, 0, UserID)).pack(side="bottom", pady=5)
         tk.Label(row9, text=UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row9, text=' ').pack(side="left", padx=325, pady=5)
 
@@ -564,7 +566,7 @@ class Menu(tk.Frame):
         DOORVPW = tk.Scale(row8, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         DOORVPW.pack(side="right", padx=5, pady=5)
         tk.Button(row9, text="Submit", command=lambda:
-                  update_info(10, DOORLRL.get(), DOORURL.get(), DOORAA.get(), DOORVA.get(), DOORAPW.get(), DOORVPW.get(), 0, 0, 0, 0, DOORMSR.get(), 0, DOORFAVD.get())).pack(side="bottom", pady=5)
+                  update_info(10, DOORLRL.get(), DOORURL.get(), DOORAA.get(), DOORVA.get(), DOORAPW.get(), DOORVPW.get(), 0, 0, 0, 0, DOORMSR.get(), 0, DOORFAVD.get(), UserID)).pack(side="bottom", pady=5)
         tk.Label(row10, text=UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row10, text=' ').pack(side="left", padx=325, pady=5)
 

@@ -74,7 +74,7 @@ class IO:
             json.dump(data_dict, dump_file, indent=4, sort_keys=True)
 
     
-def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, PVARP, FAVD):
+def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, PVARP, FAVD, user):
     """
     Neatly updates dictionary with pacemaker parameters as per requirements in documentation.
     """
@@ -94,20 +94,7 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, M
             UpdateMsg = UpdateMsg + "Lower Rate Limit Fixed to 50ppm \n"
         elif float(low) < 50:
             low = 50
-        pacemaker_values.update({"Mode": mode})
-        pacemaker_values.update({"Up_Limit": (up)})
-        pacemaker_values.update({"Low_Limit": (low)})
-        pacemaker_values.update({"A_Amp": (AAmp)})
-        pacemaker_values.update({"V_Amp": (VAmp)})
-        pacemaker_values.update({"A_PW": (APW)})
-        pacemaker_values.update({"V_PW": (VPW)})
-        pacemaker_values.update({"A_Sense": (ASense)})
-        pacemaker_values.update({"V_Sense": (VSense)})
-        pacemaker_values.update({"ARP": (ARP)})
-        pacemaker_values.update({"VRP": (VRP)})
-        pacemaker_values.update({"Max_Sense": (MaxSense)})
-        pacemaker_values.update({"PVARP": (PVARP)})
-        pacemaker_values.update({"FAVD": (FAVD)})
+        pacemaker_values.update({user :{"Mode": mode, "Up_Limit": (up), "Low_Limit": (low), "A_Amp": (AAmp), "V_Amp": (VAmp), "A_PW": (APW), "V_PW": (VPW), "A_Sense": (ASense), "V_Sense": (VSense), "ARP": (ARP), "VRP": (VRP), "Max_Sense": (MaxSense),  "PVARP": (PVARP), "FAVD": (FAVD)}})
         IO.dump(UPLOAD_LOCATION, pacemaker_values)
         UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
         print(UpdateMsg)
