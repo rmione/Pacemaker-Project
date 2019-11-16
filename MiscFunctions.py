@@ -84,7 +84,7 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, M
         This conditional checks that all the strings passed in as parameters convert properly. It is inside a try-except 
         to catch a faulty conversion
         """
-        if int(mode) and float(low) and float(up) and float(AAmp) and float(VAmp) and float(APW) and float(VPW) and float(ASense) and float(VSense) and float(ARP) and float(VRP) and int(MaxSense) and int(PVARP) and int(FAVD):
+        if int(mode) and int(low) and int(up) and int(AAmp) and int(VAmp) and int(APW) and int(VPW) and int(ASense) and int(VSense) and int(ARP) and int(VRP) and int(MaxSense) and int(PVARP) and int(FAVD):
             pass
 
         UpdateMsg = ""            
@@ -95,19 +95,19 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, M
         elif float(low) < 50:
             low = 50
         pacemaker_values.update({"Mode": mode})
-        pacemaker_values.update({"Up_Limit": float(up)})
-        pacemaker_values.update({"Low_Limit": float(low)})
-        pacemaker_values.update({"A_Amp": float(AAmp)})
-        pacemaker_values.update({"V_Amp": float(VAmp)})
-        pacemaker_values.update({"A_PW": float(APW)})
-        pacemaker_values.update({"V_PW": float(VPW)})
-        pacemaker_values.update({"A_Sense": float(ASense)})
-        pacemaker_values.update({"V_Sense": float(VSense)})
-        pacemaker_values.update({"ARP": float(ARP)})
-        pacemaker_values.update({"VRP": float(VRP)})
-        pacemaker_values.update({"Max_Sense": int(MaxSense)})
-        pacemaker_values.update({"PVARP": int(PVARP)})
-        pacemaker_values.update({"FAVD": int(FAVD)})
+        pacemaker_values.update({"Up_Limit": (up)})
+        pacemaker_values.update({"Low_Limit": (low)})
+        pacemaker_values.update({"A_Amp": (AAmp)})
+        pacemaker_values.update({"V_Amp": (VAmp)})
+        pacemaker_values.update({"A_PW": (APW)})
+        pacemaker_values.update({"V_PW": (VPW)})
+        pacemaker_values.update({"A_Sense": (ASense)})
+        pacemaker_values.update({"V_Sense": (VSense)})
+        pacemaker_values.update({"ARP": (ARP)})
+        pacemaker_values.update({"VRP": (VRP)})
+        pacemaker_values.update({"Max_Sense": (MaxSense)})
+        pacemaker_values.update({"PVARP": (PVARP)})
+        pacemaker_values.update({"FAVD": (FAVD)})
         IO.dump(UPLOAD_LOCATION, pacemaker_values)
         UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
         print(UpdateMsg)

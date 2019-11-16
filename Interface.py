@@ -5,6 +5,8 @@ import os
 from tkinter import messagebox
 from MiscFunctions import *
 
+UserID = "UserID"
+
 ''' ------------------------------------------------------ '''
 def create_user(username, password, frame_class):
     """
@@ -17,6 +19,7 @@ def create_user(username, password, frame_class):
 
     # Encrypt both the password and the username and update the database.
     en_user = IO.encrypt(str(username.get()))
+    UserID = str(username.get())
     en_pass = IO.encrypt(str(password.get()))
 
     """
@@ -51,6 +54,7 @@ def login_test(username, password, frame_class):
 
     # Like in the create user function we will be using the encoded version
     en_user = IO.encrypt(str(username.get()))
+    UserID = str(username.get())
     en_pass = IO.encrypt(str(password.get()))
 
     if (len(en_user) == 0) or (len(en_pass) == 0):
@@ -174,8 +178,8 @@ class Menu(tk.Frame):
         row4.pack()
         row5 = ttk.Frame(AOOTab)
         row5.pack()
-
-        
+        row6 = ttk.Frame(AOOTab)
+        row6.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=5, pady=5)
         AOOLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         AOOLRL.pack(side="left", padx=5, pady=5)
@@ -190,7 +194,8 @@ class Menu(tk.Frame):
         AOOPW.pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
                   update_info(1, AOOLRL.get(), AOOURL.get(), AOOAA.get(), 0, AOOPW.get(), 0, 0, 0, 0, 0, 0, 0, 0)).pack(side="bottom", pady=5)
-
+        tk.Label(row6, text=UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row6, text=' ').pack(side="left", padx=325, pady=5)
 
         # VOO
         row1 = ttk.Frame(VOOTab)
@@ -203,6 +208,8 @@ class Menu(tk.Frame):
         row4.pack()
         row5 = ttk.Frame(VOOTab)
         row5.pack()
+        row6 = ttk.Frame(VOOTab)
+        row6.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=22, pady=5)
         VOOLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         VOOLRL.pack(side="left", padx=5, pady=5)
@@ -217,6 +224,8 @@ class Menu(tk.Frame):
         VOOPW.pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
                   update_info(2, VOOLRL.get(), VOOURL.get(), 0, VOOVA.get(), 1, VOOPW.get(), 0, 0, 0, 0, 0, 0, 0)).pack(side="bottom", pady=5)
+        tk.Label(row6, text=UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row6, text=' ').pack(side="left", padx=325, pady=5)
 
         # AAI
         row1 = ttk.Frame(AAITab)
@@ -233,6 +242,8 @@ class Menu(tk.Frame):
         row6.pack()
         row7 = ttk.Frame(AAITab)
         row7.pack()
+        row8 = ttk.Frame(AAITab)
+        row8.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=5, pady=5)
         AAILRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         AAILRL.pack(side="left", padx=5, pady=5)
@@ -253,6 +264,8 @@ class Menu(tk.Frame):
         AAIARP.pack(side="left", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
                   update_info(3, AAILRL.get(), AAIURL.get(), AAIAA.get(), 0, AAIPW.get(), 0, AAIAS.get(), 0, AAIARP.get(), 0, 0, 0, 0)).pack(side="bottom", pady=5)
+        tk.Label(row8, text=UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row8, text=' ').pack(side="left", padx=325, pady=5)
         
         # VVI
         row1 = ttk.Frame(VVITab)
@@ -269,6 +282,8 @@ class Menu(tk.Frame):
         row6.pack()
         row7 = ttk.Frame(VVITab)
         row7.pack()
+        row8 = ttk.Frame(VVITab)
+        row8.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
         VVILRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         VVILRL.pack(side="left", padx=5, pady=5)
@@ -289,6 +304,8 @@ class Menu(tk.Frame):
         VVIVRP.pack(side="left", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
                   update_info(4, VVILRL.get(), VVIURL.get(), 0, VVIVA.get(), 0, VVIPW.get(), 0, VVIVS.get(), 0, VVIVRP.get(), 0, 0, 0)).pack(side="bottom", pady=5)
+        tk.Label(row8, text=UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row8, text=' ').pack(side="left", padx=325, pady=5)
 
 
         # DOO
@@ -306,6 +323,8 @@ class Menu(tk.Frame):
         row6.pack()
         row7 = ttk.Frame(DOOTab)
         row7.pack()
+        row8 = ttk.Frame(DOOTab)
+        row8.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
         DOOLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         DOOLRL.pack(side="right", padx=5, pady=5)
@@ -326,6 +345,8 @@ class Menu(tk.Frame):
         DOOVPW.pack(side="right", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
                   update_info(5, DOOLRL.get(), DOOURL.get(), DOOAA.get(), DOOVA.get(), DOOAPW.get(), DOOVPW.get(), 0, 0, 0, 0, 0, 0, 0)).pack(side="bottom", pady=5)
+        tk.Label(row8, text=UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row8, text=' ').pack(side="left", padx=325, pady=5)
 
 
         # AOOR
@@ -341,6 +362,8 @@ class Menu(tk.Frame):
         row5.pack()
         row6 = ttk.Frame(AOORTab)
         row6.pack()
+        row7 = ttk.Frame(AOORTab)
+        row7.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
         AOORLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         AOORLRL.pack(side="right", padx=5, pady=5)
@@ -348,7 +371,7 @@ class Menu(tk.Frame):
         AOORURL = tk.Scale(row2, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         AOORURL.pack(side="right", padx=5, pady=5)
         tk.Label(row3, text="Max Sensor Rate (ppm)").pack(side="left", padx=20, pady=5)
-        AOORMSR = tk.Scale(row3, from_=50, to=175, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        AOORMSR = tk.Scale(row3, from_=50, to=175, length=600, tickinterval=10, orient=tk.HORIZONTAL)
         AOORMSR.pack(side="right", padx=5, pady=5)
         tk.Label(row4, text="Atrial Amplitude (V)").pack(side="left", padx=30, pady=5)
         AOORAA = tk.Scale(row4, from_=0.5, to=5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
@@ -358,6 +381,8 @@ class Menu(tk.Frame):
         AOORAPW.pack(side="right", padx=5, pady=5)
         tk.Button(row6, text="Submit", command=lambda:
                   update_info(6, AOORLRL.get(), AOORURL.get(), AOORAA.get(), 0, AOORAPW.get(), 0, 0, 0, 0, 0, AOORMSR.get(), 0, 0)).pack(side="bottom", pady=5)
+        tk.Label(row7, text=UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row7, text=' ').pack(side="left", padx=325, pady=5)
 
 
         # VOOR
@@ -373,6 +398,8 @@ class Menu(tk.Frame):
         row5.pack()
         row6 = ttk.Frame(VOORTab)
         row6.pack()
+        row7 = ttk.Frame(VOORTab)
+        row7.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
         VOORLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         VOORLRL.pack(side="right", padx=5, pady=5)
@@ -380,7 +407,7 @@ class Menu(tk.Frame):
         VOORURL = tk.Scale(row2, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         VOORURL.pack(side="right", padx=5, pady=5)
         tk.Label(row3, text="Max Sensor Rate (ppm)").pack(side="left", padx=20, pady=5)
-        VOORMSR = tk.Scale(row3, from_=50, to=175, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        VOORMSR = tk.Scale(row3, from_=50, to=175, length=600, tickinterval=10, orient=tk.HORIZONTAL)
         VOORMSR.pack(side="right", padx=5, pady=5)
         tk.Label(row4, text="Ventricular Amplitude (V)").pack(side="left", padx=15, pady=5)
         VOORVA = tk.Scale(row4, from_=0.5, to=5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
@@ -390,6 +417,8 @@ class Menu(tk.Frame):
         VOORVPW.pack(side="right", padx=5, pady=5)
         tk.Button(row6, text="Submit", command=lambda:
                   update_info(7, VOORLRL.get(), VOORURL.get(), 0, VOORVA.get(), 0, VOORVPW.get(), 0, 0, 0, 0, VOORMSR.get(), 0, 0)).pack(side="bottom", pady=5)
+        tk.Label(row7, text=UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row7, text=' ').pack(side="left", padx=325, pady=5)
 
 
         # AAIR
@@ -411,6 +440,8 @@ class Menu(tk.Frame):
         row8.pack()
         row9 = ttk.Frame(AAIRTab)
         row9.pack()
+        row10 = ttk.Frame(AAIRTab)
+        row10.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
         AAIRLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         AAIRLRL.pack(side="right", padx=5, pady=5)
@@ -418,7 +449,7 @@ class Menu(tk.Frame):
         AAIRURL = tk.Scale(row2, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         AAIRURL.pack(side="right", padx=5, pady=5)
         tk.Label(row3, text="Max Sensor Rate (ppm)").pack(side="left", padx=20, pady=5)
-        AAIRMSR = tk.Scale(row3, from_=50, to=175, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        AAIRMSR = tk.Scale(row3, from_=50, to=175, length=600, tickinterval=10, orient=tk.HORIZONTAL)
         AAIRMSR.pack(side="right", padx=5, pady=5)
         tk.Label(row4, text="Atrial Amplitude (V)").pack(side="left", padx=30, pady=5)
         AAIRAA = tk.Scale(row4, from_=0.5, to=5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
@@ -429,14 +460,16 @@ class Menu(tk.Frame):
         tk.Label(row6, text="Atrial Sensitivity (mV)").pack(side="left", padx=28, pady=5)
         AAIRAS = tk.Scale(row6, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         AAIRAS.pack(side="right", padx=5, pady=5)
-        tk.Label(row7, text="ARP (**)").pack(side="left", padx=13, pady=5)
-        AAIRPVARP = tk.Scale(row7, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)#############
+        tk.Label(row7, text="ARP (ms)").pack(side="left", padx=60, pady=5)
+        AAIRPVARP = tk.Scale(row7, from_=150, to=500, length=600, tickinterval=20, orient=tk.HORIZONTAL)
         AAIRPVARP.pack(side="right", padx=5, pady=5)
-        tk.Label(row8, text="PVARP (**)").pack(side="left", padx=13, pady=5)
-        AAIRPVARP = tk.Scale(row8, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)#############
+        tk.Label(row8, text="PVARP (ms)").pack(side="left", padx=53, pady=5)
+        AAIRPVARP = tk.Scale(row8, from_=150, to=500, length=600, tickinterval=20, orient=tk.HORIZONTAL)
         AAIRPVARP.pack(side="right", padx=5, pady=5)
         tk.Button(row9, text="Submit", command=lambda:
-                  update_info(8, AAIRLRL.get(), AAIRURL.get(), AAIRAA.get(), 0, AAIRAPW.get(), 0, AAIRAS.get(), 0, 0, 0, AAIRMSR.get(), AAIRPVARP, 0)).pack(side="bottom", pady=5)
+                  update_info(8, AAIRLRL.get(), AAIRURL.get(), AAIRAA.get(), 0, AAIRAPW.get(), 0, AAIRAS.get(), 0, 0, 0, AAIRMSR.get(), AAIRPVARP.get(), 0)).pack(side="bottom", pady=5)
+        tk.Label(row10, text=UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row10, text=' ').pack(side="left", padx=325, pady=5)
 
 
         # VVIR
@@ -456,6 +489,8 @@ class Menu(tk.Frame):
         row7.pack()
         row8 = ttk.Frame(VVIRTab)
         row8.pack()
+        row9 = ttk.Frame(VVIRTab)
+        row9.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
         VVIRLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         VVIRLRL.pack(side="right", padx=5, pady=5)
@@ -463,7 +498,7 @@ class Menu(tk.Frame):
         VVIRURL = tk.Scale(row2, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         VVIRURL.pack(side="right", padx=5, pady=5)
         tk.Label(row3, text="Max Sensor Rate (ppm)").pack(side="left", padx=20, pady=5)
-        VVIRMSR = tk.Scale(row3, from_=50, to=175, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        VVIRMSR = tk.Scale(row3, from_=50, to=175, length=600, tickinterval=10, orient=tk.HORIZONTAL)
         VVIRMSR.pack(side="right", padx=5, pady=5)
         tk.Label(row4, text="Ventricular Amplitude (V)").pack(side="left", padx=15, pady=5)
         VVIRVA = tk.Scale(row4, from_=0.5, to=5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
@@ -474,11 +509,13 @@ class Menu(tk.Frame):
         tk.Label(row6, text="Ventricular Sensitivity (mV)").pack(side="left", padx=13, pady=5)
         VVIRVS = tk.Scale(row6, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         VVIRVS.pack(side="right", padx=5, pady=5)
-        tk.Label(row7, text="VRP (**)").pack(side="left", padx=13, pady=5)
-        VVIRVS = tk.Scale(row7, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)####
-        VVIRVS.pack(side="right", padx=5, pady=5)
+        tk.Label(row7, text="VRP (ms)").pack(side="left", padx=60, pady=5)
+        VVIRVRP = tk.Scale(row7, from_=150, to=500, length=600, tickinterval=20, orient=tk.HORIZONTAL)
+        VVIRVRP.pack(side="right", padx=5, pady=5)
         tk.Button(row8, text="Submit", command=lambda:
-                  update_info(9, VVIRLRL.get(), VVIRURL.get(), 0, VVIRVA.get(), 0, VVIRVPW.get(), 0, VVIRVS.get(), 0, 0, VVIRMSR.get())).pack(side="bottom", pady=5)####
+                  update_info(9, VVIRLRL.get(), VVIRURL.get(), 0, VVIRVA.get(), 0, VVIRVPW.get(), 0, VVIRVS.get(), 0, VVIRVRP.get(), VVIRMSR.get(), 0, 0)).pack(side="bottom", pady=5)
+        tk.Label(row9, text=UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row9, text=' ').pack(side="left", padx=325, pady=5)
 
 
         # DOOR
@@ -498,6 +535,10 @@ class Menu(tk.Frame):
         row7.pack()
         row8 = ttk.Frame(DOORTab)
         row8.pack()
+        row9 = ttk.Frame(DOORTab)
+        row9.pack()
+        row10 = ttk.Frame(DOORTab)
+        row10.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
         DOORLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         DOORLRL.pack(side="right", padx=5, pady=5)
@@ -505,22 +546,26 @@ class Menu(tk.Frame):
         DOORURL = tk.Scale(row2, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         DOORURL.pack(side="right", padx=5, pady=5)
         tk.Label(row3, text="Max Sensor Rate (ppm)").pack(side="left", padx=20, pady=5)
-        DOORMSR = tk.Scale(row3, from_=50, to=175, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        DOORMSR = tk.Scale(row3, from_=50, to=175, length=600, tickinterval=10, orient=tk.HORIZONTAL)
         DOORMSR.pack(side="right", padx=5, pady=5)
-        tk.Label(row4, text="Fixed AV Delay (**)").pack(side="left", padx=20, pady=5)
-        DOORFAVD = tk.Scale(row4, from_=50, to=175, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)############
+        tk.Label(row4, text="Fixed AV Delay (ms)").pack(side="left", padx=28, pady=5)
+        DOORFAVD = tk.Scale(row4, from_=70, to=300, length=600, tickinterval=10, orient=tk.HORIZONTAL)
         DOORFAVD.pack(side="right", padx=5, pady=5)
-        tk.Label(row5, text="Atrial Amplitude (V)").pack(side="left", padx=15, pady=5)
+        tk.Label(row5, text="Atrial Amplitude (V)").pack(side="left", padx=30, pady=5)
         DOORAA = tk.Scale(row5, from_=0.5, to=5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
         DOORAA.pack(side="right", padx=5, pady=5)
         tk.Label(row6, text="Ventricular Amplitude (V)").pack(side="left", padx=15, pady=5)
         DOORVA = tk.Scale(row6, from_=0.5, to=5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
         DOORVA.pack(side="right", padx=5, pady=5)
-        tk.Label(row7, text="Atrial Pulse Width (ms)").pack(side="left", padx=8, pady=5)
+        tk.Label(row7, text="Atrial Pulse Width (ms)").pack(side="left", padx=23, pady=5)
         DOORAPW = tk.Scale(row7, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         DOORAPW.pack(side="right", padx=5, pady=5)
         tk.Label(row8, text="Ventricular Pulse Width (ms)").pack(side="left", padx=8, pady=5)
         DOORVPW = tk.Scale(row8, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         DOORVPW.pack(side="right", padx=5, pady=5)
-        tk.Button(row8, text="Submit", command=lambda:
-                  update_info(10, DOORLRL.get(), DOORURL.get(), DOORAA.get(), DOORVA.get(), DOORAPW.get(), DOORVPW.get(), DOORAS.get(), DOORVS.get(), 0, 0, DOORMSR.get())).pack(side="bottom", pady=5)
+        tk.Button(row9, text="Submit", command=lambda:
+                  update_info(10, DOORLRL.get(), DOORURL.get(), DOORAA.get(), DOORVA.get(), DOORAPW.get(), DOORVPW.get(), 0, 0, 0, 0, DOORMSR.get(), 0, DOORFAVD.get())).pack(side="bottom", pady=5)
+        tk.Label(row10, text=UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row10, text=' ').pack(side="left", padx=325, pady=5)
+
+        
