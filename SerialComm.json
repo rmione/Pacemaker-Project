@@ -18,17 +18,17 @@
     "zxc": {
         "ARP": 0,
         "A_Amp": 0,
-        "A_PW": 0,
+        "A_PW": 1,
         "A_Sense": 0,
         "FAVD": 0,
-        "Low_Limit": 75,
-        "Max_Sense": 76,
-        "Mode": 7,
+        "Low_Limit": 50,
+        "Max_Sense": 0,
+        "Mode": 2,
         "PVARP": 0,
-        "Up_Limit": 100,
+        "Up_Limit": 50,
         "VRP": 0,
-        "V_Amp": 3,
-        "V_PW": 2,
+        "V_Amp": 1,
+        "V_PW": 1,
         "V_Sense": 0
     }
 }
