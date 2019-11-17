@@ -74,11 +74,27 @@ class IO:
             json.dump(data_dict, dump_file, indent=4, sort_keys=True)
 
     
-def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, PVARP, FAVD, user):
+def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, PVARP, FAVD, ReTime, RecTime, RespFact, AThresh, user):
     """
     Neatly updates dictionary with pacemaker parameters as per requirements in documentation.
     """
 
+    
+
+    UpdateMsg = ""            
+                
+    if float(low) > float(up):
+        low = 50
+        UpdateMsg = UpdateMsg + "Lower Rate Limit Fixed to 50ppm \n"
+    elif float(low) < 50:
+        low = 50
+    pacemaker_values.update({user :{"Mode": mode, "Up_Limit": (up), "Low_Limit": (low), "A_Amp": (AAmp), "V_Amp": (VAmp), "A_PW": (APW), "V_PW": (VPW), "A_Sense": (ASense), "V_Sense": (VSense), "ARP": (ARP), "VRP": (VRP), "Max_Sense": (MaxSense), "PVARP": (PVARP), "FAVD": (FAVD), "ReTime": (ReTime), "RecTime": (RecTime), "RespFact": (RespFact), "AThresh": (AThresh)}})
+    IO.dump(UPLOAD_LOCATION, pacemaker_values)
+    UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
+    print(UpdateMsg)
+    messagebox.showinfo("Pacemaker Message", UpdateMsg)
+
+'''
     try:
         """
         This conditional checks that all the strings passed in as parameters convert properly. It is inside a try-except 
@@ -86,20 +102,6 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, M
         """
         if int(mode) and int(low) and int(up) and int(AAmp) and int(VAmp) and int(APW) and int(VPW) and int(ASense) and int(VSense) and int(ARP) and int(VRP) and int(MaxSense) and int(PVARP) and int(FAVD):
             pass
-
-        UpdateMsg = ""            
-                
-        if float(low) > float(up):
-            low = 50
-            UpdateMsg = UpdateMsg + "Lower Rate Limit Fixed to 50ppm \n"
-        elif float(low) < 50:
-            low = 50
-        pacemaker_values.update({user :{"Mode": mode, "Up_Limit": (up), "Low_Limit": (low), "A_Amp": (AAmp), "V_Amp": (VAmp), "A_PW": (APW), "V_PW": (VPW), "A_Sense": (ASense), "V_Sense": (VSense), "ARP": (ARP), "VRP": (VRP), "Max_Sense": (MaxSense),  "PVARP": (PVARP), "FAVD": (FAVD)}})
-        IO.dump(UPLOAD_LOCATION, pacemaker_values)
-        UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
-        print(UpdateMsg)
-        messagebox.showinfo("Pacemaker Message", UpdateMsg)
-        
         
     except ValueError as e:
 
@@ -108,5 +110,5 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, M
         
         """
         messagebox.showinfo("Error", "Invalid info! Re enter")
-
+'''
 
