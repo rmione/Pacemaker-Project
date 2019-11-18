@@ -85,17 +85,17 @@ def egramSwitch(value):
     if (value == 1):
         AEgram = 1
         VEgram = 0
-        ani = animation.FuncAnimation(fig, animate, interval=1000)
+        ani = animation.FuncAnimation(fig, animate, interval=10)
         plt.show()
     elif (value == 2):
         AEgram = 0
         VEgram = 1
-        ani = animation.FuncAnimation(fig, animate, interval=1000)
+        ani = animation.FuncAnimation(fig, animate, interval=10)
         plt.show()
     elif (value == 3):
         AEgram = 1
         VEgram = 1
-        ani = animation.FuncAnimation(fig, animate, interval=1000)
+        ani = animation.FuncAnimation(fig, animate, interval=10)
         plt.show()
     else:
         messagebox.showinfo("OOPS", "Something went wrong.")
