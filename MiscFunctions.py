@@ -18,7 +18,7 @@ UPLOAD_LOCATION = os.getcwd() + '\SerialComm.json'
 ''' DATABASE '''
 # Checks if the json file exists
 if os.path.exists(DUMP_LOCATION):
-    # if it exists, load in that database as the current database. Now it has memory
+    # if it exists, load in that database as the current database.
     with open(DUMP_LOCATION) as f:
         database = json.load(f)
 else:
@@ -28,7 +28,7 @@ else:
 ''' PACEMAKER VALUES '''
 # Checks if the json file exists
 if os.path.exists(UPLOAD_LOCATION):
-    # if it exists, load in that database as the current database. Now it has memory
+    # if it exists, load in that database as the current database.
     with open(UPLOAD_LOCATION) as f:
         pacemaker_values = json.load(f)
 else:
@@ -61,7 +61,6 @@ class IO:
             conv = conv + chr(ord(some_phrase[i]) - SHIFT)
         return conv
 
-
     @classmethod
     def dump(cls, path, data_dict):
         """
@@ -75,80 +74,41 @@ class IO:
             json.dump(data_dict, dump_file, indent=4, sort_keys=True)
 
     
-def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP):
+def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, PVARP, FAVD, ReTime, RecTime, RespFact, AThresh, user):
     """
     Neatly updates dictionary with pacemaker parameters as per requirements in documentation.
     """
 
+    
+
+    UpdateMsg = ""            
+                
+    if float(low) > float(up):
+        low = 50
+        UpdateMsg = UpdateMsg + "Lower Rate Limit Fixed to 50ppm \n"
+    elif float(low) < 50:
+        low = 50
+    pacemaker_values.update({user :{"Mode": mode, "Up_Limit": (up), "Low_Limit": (low), "A_Amp": (AAmp), "V_Amp": (VAmp), "A_PW": (APW), "V_PW": (VPW), "A_Sense": (ASense), "V_Sense": (VSense), "ARP": (ARP), "VRP": (VRP), "Max_Sense": (MaxSense), "PVARP": (PVARP), "FAVD": (FAVD), "ReTime": (ReTime), "RecTime": (RecTime), "RespFact": (RespFact), "AThresh": (AThresh)}})
+    IO.dump(UPLOAD_LOCATION, pacemaker_values)
+    UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
+    print(UpdateMsg)
+    messagebox.showinfo("Pacemaker Message", UpdateMsg)
+
+'''
     try:
         """
         This conditional checks that all the strings passed in as parameters convert properly. It is inside a try-except 
         to catch a faulty conversion
         """
-        if int(mode) and float(low) and float(up) and float(AAmp) and float(VAmp) and float(APW) and float(VPW) and float(ASense) and float(VSense) and float(ARP) and float(VRP):
+        if int(mode) and int(low) and int(up) and int(AAmp) and int(VAmp) and int(APW) and int(VPW) and int(ASense) and int(VSense) and int(ARP) and int(VRP) and int(MaxSense) and int(PVARP) and int(FAVD):
             pass
-
-        pacemaker_values.update({"Mode": mode})
-        if float(up) > 150:
-            up = 150
-        elif float(up) < 75:
-            up = 75
-        pacemaker_values.update({"Up_Limit": float(up)})
-        if float(low) > float(up):
-            low = 50
-        elif float(low) < 50:
-            low = 50
-        pacemaker_values.update({"Low_Limit": float(low)})
-        if float(AAmp) > 5:
-            AAmp = 5
-        elif float(AAmp) < 0.5:
-            AAmp = 0.5
-        pacemaker_values.update({"A_Amp": float(AAmp)})
-        if float(VAmp) > 5:
-            VAmp = 5
-        elif float(VAmp) < 0.5:
-            VAmp = 0.5
-        pacemaker_values.update({"V_Amp": float(VAmp)})
-        if float(APW) > 10:
-            APW = 10
-        elif float(APW) < 1:
-            APW = 1
-        pacemaker_values.update({"A_PW": float(APW)})
-        if float(VPW) > 10:
-            VPW = 10
-        elif float(VPW) < 1:
-            VPW = 1
-        pacemaker_values.update({"V_PW": float(VPW)})
-        if float(ASense) > 10:
-            ASense = 10
-        elif float(ASense) < 0.25:
-            ASense = 0.25
-        pacemaker_values.update({"A_Sense": float(ASense)})
-        if float(VSense) > 10:
-            VSense = 10
-        elif float(VSense) < 0.25:
-            VSense = 0.25
-        pacemaker_values.update({"V_Sense": float(VSense)})
-        if float(ARP) > 500:
-            ARP = 500
-        elif float(ARP) < 150:
-            ARP = 150
-        pacemaker_values.update({"ARP": float(ARP)})
-        if float(VRP) > 500:
-            VRP = 500
-        elif float(VRP) < 150:
-            VRP = 150
-        pacemaker_values.update({"VRP": float(VRP)})
-        IO.dump(UPLOAD_LOCATION, pacemaker_values)
-        print("Pacemaker Values Updated Successfully")
-
+        
     except ValueError as e:
 
         """
         In this situation, we have some invalid input, and it didn't convert properly. 
         
         """
-        print("Invalid info! Re enter")
-        print("Error printout here: " + str(e))
-
+        messagebox.showinfo("Error", "Invalid info! Re enter")
+'''
 

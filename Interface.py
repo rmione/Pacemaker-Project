@@ -5,6 +5,16 @@ import os
 from tkinter import messagebox
 from MiscFunctions import *
 
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from matplotlib import style
+
+style.use('fivethirtyeight')
+
+UserID = "UserID"
+AEgram = 0
+VEgram = 0
+
 ''' ------------------------------------------------------ '''
 def create_user(username, password, frame_class):
     """
@@ -15,8 +25,10 @@ def create_user(username, password, frame_class):
     Also takes a frame_class
     """
 
+    global UserID
     # Encrypt both the password and the username and update the database.
     en_user = IO.encrypt(str(username.get()))
+    UserID = str(username.get())
     en_pass = IO.encrypt(str(password.get()))
 
     """
@@ -49,8 +61,10 @@ def create_user(username, password, frame_class):
 def login_test(username, password, frame_class):
     """Function takes text-variable version of username and password, as well as frame class"""
 
+    global UserID
     # Like in the create user function we will be using the encoded version
     en_user = IO.encrypt(str(username.get()))
+    UserID = str(username.get())
     en_pass = IO.encrypt(str(password.get()))
 
     if (len(en_user) == 0) or (len(en_pass) == 0):
@@ -62,6 +76,61 @@ def login_test(username, password, frame_class):
         print("User does not exist")
         messagebox.showinfo("User does not exist", "This user does not exist in the database, try again.")
 
+def egramSwitch(value):
+    global AEgram
+    global VEgram
+    style.use('fivethirtyeight')
+    global fig
+    fig = plt.figure()
+    if (value == 1):
+        AEgram = 1
+        VEgram = 0
+        ani = animation.FuncAnimation(fig, animate, interval=10)
+        plt.show()
+    elif (value == 2):
+        AEgram = 0
+        VEgram = 1
+        ani = animation.FuncAnimation(fig, animate, interval=10)
+        plt.show()
+    elif (value == 3):
+        AEgram = 1
+        VEgram = 1
+        ani = animation.FuncAnimation(fig, animate, interval=10)
+        plt.show()
+    else:
+        messagebox.showinfo("OOPS", "Something went wrong.")
+
+        
+def animate(i):
+    global fig
+    global AEgram
+    global VEgram
+    xA = []
+    yA = []
+    xV = []
+    yV = []
+    if (AEgram == 1):
+        ax1 = fig.add_subplot(1,1,1)
+        graph_data = open('Atrium Values.txt','r').read()
+        lines = graph_data.split('\n')
+        for line in lines:
+            if len(line) > 1:
+                x, y = line.split(',')
+                xA.append(float(x))
+                yA.append(float(y))
+                
+    if (VEgram == 1):
+        ax1 = fig.add_subplot(1,1,1)
+        second_data = open('Ventricle Values.txt','r').read()
+        values = second_data.split('\n')
+        for value in values:
+            if len(value) > 1:
+                x, y = value.split(',')
+                xV.append(float(x))
+                yV.append(float(y))
+                
+    ax1.clear()
+    ax1.plot(xA, yA, xV, yV)
 
 ''' ============================================================= '''
 
@@ -83,7 +152,7 @@ class SampleApp(tk.Tk):
 class StartUp(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
-        master.resizable(False, False)
+        master.resizable(False, False)###################################################
         tk.Label(self, text="Welcome").pack()
         tk.Button(self, text="Login",
                   command=lambda: master.switch_frame(Login)).pack(padx=10, pady=10)
@@ -128,18 +197,11 @@ class CreateUser(tk.Frame):
 class Menu(tk.Frame):
     def __init__(self, master):      
         tk.Frame.__init__(self, master)
-        Low_Limit = tk.StringVar()
-        Up_Limit = tk.StringVar()
-        A_Amp = tk.StringVar()
-        V_Amp = tk.StringVar()
-        A_PW = tk.StringVar()
-        V_PW = tk.StringVar()
-        A_Sense = tk.StringVar()
-        V_Sense = tk.StringVar()
-        ARP = tk.StringVar()
-        VRP = tk.StringVar()
-        
-        tabControl = ttk.Notebook(self)
+        master.resizable(False, False)
+        '''
+        master.wm_geometry("850x200")
+        '''        
+        tabControl = ttk.Notebook(master)
         AOOTab = ttk.Frame(tabControl)
         VOOTab = ttk.Frame(tabControl)
         AAITab = ttk.Frame(tabControl)
@@ -150,6 +212,7 @@ class Menu(tk.Frame):
         AAIRTab = ttk.Frame(tabControl)
         VVIRTab = ttk.Frame(tabControl)
         DOORTab = ttk.Frame(tabControl)
+        DDDRTab = ttk.Frame(tabControl)
         tabControl.add(AOOTab, text='AOO')
         tabControl.add(VOOTab, text='VOO')
         tabControl.add(AAITab, text='AAI')
@@ -160,10 +223,21 @@ class Menu(tk.Frame):
         tabControl.add(AAIRTab, text='AAIR')
         tabControl.add(VVIRTab, text='VVIR')
         tabControl.add(DOORTab, text='DOOR')
-        
+        tabControl.add(DDDRTab, text='DDDR')        
         tabControl.pack(expand=1, side="top")
         
         # AOO
+        ''' 
+        canvas = tk.Canvas(AOOTab)
+        frame = ttk.Frame(canvas)
+        myscrollbar=tk.Scrollbar(AOOTab,orient="vertical",command=canvas.yview)
+        canvas.configure(yscrollcommand=myscrollbar.set)
+
+        myscrollbar.pack(side="right",fill="y")
+        canvas.pack(side="left")
+        canvas.create_window((0,0),window=frame,anchor='nw')
+        frame.bind("<Configure>",canvas.configure(scrollregion=canvas.bbox("all"),width=0,height=400))
+        '''
         row1 = ttk.Frame(AOOTab)
         row1.pack()
         row2 = ttk.Frame(AOOTab)
@@ -174,17 +248,30 @@ class Menu(tk.Frame):
         row4.pack()
         row5 = ttk.Frame(AOOTab)
         row5.pack()
-
+        row6 = ttk.Frame(AOOTab)
+        row6.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=5, pady=5)
-        tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
+        AOOLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        AOOLRL.pack(side="left", padx=5, pady=5)
         tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=5, pady=5)
-        tk.Entry(row2, textvariable=Up_Limit).pack(side="left", padx=5, pady=5)
+        AOOURL = tk.Scale(row2, from_=75, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        AOOURL.pack(side="left", padx=5, pady=5)
         tk.Label(row3, text="Atrial Amplitude(V)").pack(side="left", padx=15, pady=5)
-        tk.Entry(row3, textvariable=A_Amp).pack(side="left", padx=5, pady=5)
+        AOOAA = tk.Scale(row3, from_=0.5, to=5, resolution=0.5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        AOOAA.pack(side="left", padx=5, pady=5)
         tk.Label(row4, text="Atrial Pulse Width (ms)").pack(side="left", padx=6, pady=5)
-        tk.Entry(row4, textvariable=A_PW).pack(side="left", padx=5, pady=5)
+        AOOPW = tk.Scale(row4, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
+        AOOPW.pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
-                  update_info(1, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0.5, A_PW.get(), 1, 0.25, 0.25, 150, 150)).pack(side="bottom", pady=5)
+                  update_info(1, AOOLRL.get(), AOOURL.get(), AOOAA.get(), 0, AOOPW.get(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
+        tk.Label(row6, text="User: " + UserID).pack(side="left", padx=5, pady=5)
+        tk.Label(row6, text=" ").pack(side="left", padx=180, pady=5)
+        tk.Button(row6, text="Atrium Egram", command=lambda:
+                  egramSwitch(1)).pack(side="left", pady=5)
+        tk.Button(row6, text="Ventricle Egram", command=lambda:
+                  egramSwitch(2)).pack(side="left", pady=5)
+        tk.Button(row6, text="Dual Egram", command=lambda:
+                  egramSwitch(3)).pack(side="left", pady=5)
 
         # VOO
         row1 = ttk.Frame(VOOTab)
@@ -197,16 +284,30 @@ class Menu(tk.Frame):
         row4.pack()
         row5 = ttk.Frame(VOOTab)
         row5.pack()
+        row6 = ttk.Frame(VOOTab)
+        row6.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=22, pady=5)
-        tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
+        VOOLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        VOOLRL.pack(side="left", padx=5, pady=5)
         tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=22, pady=5)
-        tk.Entry(row2, textvariable=Up_Limit).pack(side="left", padx=5, pady=5)
+        VOOURL = tk.Scale(row2, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        VOOURL.pack(side="left", padx=5, pady=5)
         tk.Label(row3, text="Ventricular Amplitude (V)").pack(side="left", padx=17, pady=5)
-        tk.Entry(row3, textvariable=V_Amp).pack(side="left", padx=5, pady=5)
+        VOOVA = tk.Scale(row3, from_=0.5, to=5, resolution=0.5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        VOOVA.pack(side="left", padx=5, pady=5)
         tk.Label(row4, text="Ventricular Pulse Width (ms)").pack(side="left", padx=10, pady=5)
-        tk.Entry(row4, textvariable=V_PW).pack(side="left", padx=5, pady=5)
+        VOOPW = tk.Scale(row4, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
+        VOOPW.pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
-                  update_info(2, Low_Limit.get(), Up_Limit.get(), 0.5, V_Amp.get(), 1, V_PW.get(), 0.25, 0.25, 150, 150)).pack(side="bottom", pady=5)
+                  update_info(2, VOOLRL.get(), VOOURL.get(), 0, VOOVA.get(), 1, VOOPW.get(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
+        tk.Label(row6, text="User: " + UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row6, text=" ").pack(side="left", padx=180, pady=5)
+        tk.Button(row6, text="Atrium Egram", command=lambda:
+                  egramSwitch(1)).pack(side="left", pady=5)
+        tk.Button(row6, text="Ventricle Egram", command=lambda:
+                  egramSwitch(2)).pack(side="left", pady=5)
+        tk.Button(row6, text="Dual Egram", command=lambda:
+                  egramSwitch(3)).pack(side="left", pady=5)
 
         # AAI
         row1 = ttk.Frame(AAITab)
@@ -223,20 +324,36 @@ class Menu(tk.Frame):
         row6.pack()
         row7 = ttk.Frame(AAITab)
         row7.pack()
-        tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=5, pady=5)
-        tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
-        tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=5, pady=5)
-        tk.Entry(row2, textvariable=Up_Limit).pack(side="left", padx=5, pady=5)
-        tk.Label(row3, text="Atrial Amplitude (V)").pack(side="left", padx=15, pady=5)
-        tk.Entry(row3, textvariable=A_Amp).pack(side="left", padx=5, pady=5)
-        tk.Label(row4, text="Atrial Pulse Width (ms)").pack(side="left", padx=7, pady=5)
-        tk.Entry(row4, textvariable=A_PW).pack(side="left", padx=5, pady=5)
-        tk.Label(row5, text="Atrial Sensitivity (mV)").pack(side="left", padx=11, pady=5)
-        tk.Entry(row5, textvariable=A_Sense).pack(side="left", padx=5, pady=5)
-        tk.Label(row6, text="ARP (ms)").pack(side="left", padx=43, pady=5)
-        tk.Entry(row6, textvariable=ARP).pack(side="left", padx=5, pady=5)
+        row8 = ttk.Frame(AAITab)
+        row8.pack()
+        tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=11, pady=5)
+        AAILRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        AAILRL.pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=11, pady=5)
+        AAIURL = tk.Scale(row2, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        AAIURL.pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Atrial Amplitude (V)").pack(side="left", padx=21, pady=5)
+        AAIAA = tk.Scale(row3, from_=0.5, to=5, resolution=0.5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        AAIAA.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Atrial Pulse Width (ms)").pack(side="left", padx=13, pady=5)
+        AAIPW = tk.Scale(row4, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
+        AAIPW.pack(side="left", padx=5, pady=5)
+        tk.Label(row5, text="Atrial Sense Threshold (mV)").pack(side="left", padx=0, pady=5)
+        AAIAS = tk.Scale(row5, from_=0.5, to=3.3, resolution=0.1, length=600, tickinterval=0.3, orient=tk.HORIZONTAL)
+        AAIAS.pack(side="left", padx=0, pady=5)
+        tk.Label(row6, text="ARP (ms)").pack(side="left", padx=49, pady=5)
+        AAIARP = tk.Scale(row6, from_=150, to=500, length=600, tickinterval=20, orient=tk.HORIZONTAL)
+        AAIARP.pack(side="left", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
-                  update_info(3, Low_Limit.get(), Up_Limit.get(), A_Amp.get(), 0.5, A_PW.get(), 1, A_Sense.get(), 0.25, ARP.get(), 150)).pack(side="bottom", pady=5)
+                  update_info(3, AAILRL.get(), AAIURL.get(), AAIAA.get(), 0, AAIPW.get(), 0, AAIAS.get(), 0, AAIARP.get(), 0, 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
+        tk.Label(row8, text="User: " + UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row8, text=" ").pack(side="left", padx=180, pady=5)
+        tk.Button(row8, text="Atrium Egram", command=lambda:
+                  egramSwitch(1)).pack(side="left", pady=5)
+        tk.Button(row8, text="Ventricle Egram", command=lambda:
+                  egramSwitch(2)).pack(side="left", pady=5)
+        tk.Button(row8, text="Dual Egram", command=lambda:
+                  egramSwitch(3)).pack(side="left", pady=5)
         
         # VVI
         row1 = ttk.Frame(VVITab)
@@ -253,17 +370,516 @@ class Menu(tk.Frame):
         row6.pack()
         row7 = ttk.Frame(VVITab)
         row7.pack()
-        tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
-        tk.Entry(row1, textvariable=Low_Limit).pack(side="left", padx=5, pady=5)
-        tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
-        tk.Entry(row2, textvariable=Up_Limit).pack(side="left", padx=5, pady=5)
-        tk.Label(row3, text="Ventrical Amplitude (V)").pack(side="left", padx=21, pady=5)
-        tk.Entry(row3, textvariable=V_Amp).pack(side="left", padx=5, pady=5)
-        tk.Label(row4, text="Ventricular Pulse Width (ms)").pack(side="left", padx=7, pady=5)
-        tk.Entry(row4, textvariable=V_PW).pack(side="left", padx=5, pady=5)
-        tk.Label(row5, text="Ventricular Sensitivity (mV)").pack(side="left", padx=11, pady=5)
-        tk.Entry(row5, textvariable=V_Sense).pack(side="left", padx=5, pady=5)
-        tk.Label(row6, text="VRP (ms)").pack(side="left", padx=57, pady=5)
-        tk.Entry(row6, textvariable=VRP).pack(side="left", padx=5, pady=5)
+        row8 = ttk.Frame(VVITab)
+        row8.pack()
+        tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=26, pady=5)
+        VVILRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        VVILRL.pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=26, pady=5)
+        VVIURL = tk.Scale(row2, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        VVIURL.pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Ventrical Amplitude (V)").pack(side="left", padx=27, pady=5)
+        VVIVA = tk.Scale(row3, from_=0.5, to=5, resolution=0.5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        VVIVA.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Ventricular Pulse Width (ms)").pack(side="left", padx=13, pady=5)
+        VVIPW = tk.Scale(row4, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
+        VVIPW.pack(side="left", padx=5, pady=5)
+        tk.Label(row5, text="Ventricular Sense Threshold (mV)").pack(side="left", padx=0, pady=5)
+        VVIVS = tk.Scale(row5, from_=0.5, to=3.3, resolution=0.1, length=600, tickinterval=0.3, orient=tk.HORIZONTAL)
+        VVIVS.pack(side="left", padx=0, pady=5)
+        tk.Label(row6, text="VRP (ms)").pack(side="left", padx=63, pady=5)
+        VVIVRP = tk.Scale(row6, from_=150, to=500, length=600, tickinterval=20, orient=tk.HORIZONTAL)
+        VVIVRP.pack(side="left", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
-                  update_info(4, Low_Limit.get(), Up_Limit.get(), 0.5, V_Amp.get(), 1, A_PW.get(), 0.25, V_Sense.get(), 150, VRP.get())).pack(side="bottom", pady=5)
+                  update_info(4, VVILRL.get(), VVIURL.get(), 0, VVIVA.get(), 0, VVIPW.get(), 0, VVIVS.get(), 0, VVIVRP.get(), 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
+        tk.Label(row8, text="User: " + UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row8, text=" ").pack(side="left", padx=180, pady=5)
+        tk.Button(row8, text="Atrium Egram", command=lambda:
+                  egramSwitch(1)).pack(side="left", pady=5)
+        tk.Button(row8, text="Ventricle Egram", command=lambda:
+                  egramSwitch(2)).pack(side="left", pady=5)
+        tk.Button(row8, text="Dual Egram", command=lambda:
+                  egramSwitch(3)).pack(side="left", pady=5)
+
+
+        # DOO
+        row1 = ttk.Frame(DOOTab)
+        row1.pack()
+        row2 = ttk.Frame(DOOTab)
+        row2.pack()
+        row3 = ttk.Frame(DOOTab)
+        row3.pack()
+        row4 = ttk.Frame(DOOTab)
+        row4.pack()
+        row5 = ttk.Frame(DOOTab)
+        row5.pack()
+        row6 = ttk.Frame(DOOTab)
+        row6.pack()
+        row7 = ttk.Frame(DOOTab)
+        row7.pack()
+        row8 = ttk.Frame(DOOTab)
+        row8.pack()
+        tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
+        DOOLRL = tk.Scale(row1, from_=30, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        DOOLRL.pack(side="right", padx=5, pady=5)
+        tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
+        DOOURL = tk.Scale(row2, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
+        DOOURL.pack(side="right", padx=5, pady=5)
+        tk.Label(row3, text="Atrial Amplitude (V)").pack(side="left", padx=30, pady=5)
+        DOOAA = tk.Scale(row3, from_=0.5, to=5, resolution=0.5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        DOOAA.pack(side="right", padx=5, pady=5)
+        tk.Label(row4, text="Ventricular Amplitude (V)").pack(side="left", padx=15, pady=5)
+        DOOVA = tk.Scale(row4, from_=0.5, to=5, resolution=0.5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        DOOVA.pack(side="right", padx=5, pady=5)
+        tk.Label(row5, text="Atrial Pulse Width (ms)").pack(side="left", padx=21, pady=5)
+        DOOAPW = tk.Scale(row5, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
+        DOOAPW.pack(side="right", padx=5, pady=5)
+        tk.Label(row6, text="Ventricular Pulse Width (ms)").pack(side="left", padx=7, pady=5)
+        DOOVPW = tk.Scale(row6, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
+        DOOVPW.pack(side="right", padx=5, pady=5)
+        tk.Button(row7, text="Submit", command=lambda:
+                  update_info(5, DOOLRL.get(), DOOURL.get(), DOOAA.get(), DOOVA.get(), DOOAPW.get(), DOOVPW.get(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
+        tk.Label(row8, text="User: " + UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row8, text=" ").pack(side="left", padx=180, pady=5)
+        tk.Button(row8, text="Atrium Egram", command=lambda:
+                  egramSwitch(1)).pack(side="left", pady=5)
+        tk.Button(row8, text="Ventricle Egram", command=lambda:
+                  egramSwitch(2)).pack(side="left", pady=5)
+        tk.Button(row8, text="Dual Egram", command=lambda:
+                  egramSwitch(3)).pack(side="left", pady=5)
+
+
+        # AOOR
+        row1 = ttk.Frame(AOORTab)
+        row1.pack()
+        row2 = ttk.Frame(AOORTab)
+        row2.pack()
+        row3 = ttk.Frame(AOORTab)
+        row3.pack()
+        row4 = ttk.Frame(AOORTab)
+        row4.pack()
+        row5 = ttk.Frame(AOORTab)
+        row5.pack()
+        row10 = ttk.Frame(AOORTab)
+        row10.pack()
+        row11 = ttk.Frame(AOORTab)
+        row11.pack()
+        tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=6, pady=5)
+        AOORLRL = tk.Scale(row1, from_=30, to=175, length=300, tickinterval=15, orient=tk.HORIZONTAL)
+        AOORLRL.pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=5, pady=5)
+        AOORURL = tk.Scale(row2, from_=50, to=175, length=300, tickinterval=15, orient=tk.HORIZONTAL)
+        AOORURL.pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Max Sensor Rate (ppm)").pack(side="left", padx=6, pady=5)
+        AOORMSR = tk.Scale(row3, from_=50, to=175, length=300, tickinterval=10, orient=tk.HORIZONTAL)
+        AOORMSR.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Atrial Amplitude (V)").pack(side="left", padx=15, pady=5)
+        AOORAA = tk.Scale(row4, from_=0.5, to=5, resolution=0.5, length=300, tickinterval=0.5, orient=tk.HORIZONTAL)
+        AOORAA.pack(side="left", padx=5, pady=5)
+        tk.Label(row1, text="Atrial Pulse Width (ms)").pack(side="left", padx=5, pady=5)
+        AOORAPW = tk.Scale(row1, from_=1, to=10, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        AOORAPW.pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Reaction Time (s)").pack(side="left", padx=19, pady=5)
+        AOORRT = tk.Scale(row2, from_=1, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
+        AOORRT.pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Recovery Time(s)").pack(side="left", padx=20, pady=5)
+        AOORRCT = tk.Scale(row3, from_=5, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
+        AOORRCT.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Response Factor").pack(side="left", padx=22, pady=5)
+        AOORRF = tk.Scale(row4, from_=1, to=16, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        AOORRF.pack(side="left", padx=5, pady=5)
+        tk.Label(row5, text="Activity Threshold").pack(side="left", padx=36, pady=5)
+        AOORAT = tk.Scale(row5, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        AOORAT.pack(side="left", padx=5, pady=5)
+        tk.Button(row10, text="Submit", command=lambda:
+                  update_info(6, AOORLRL.get(), AOORURL.get(), AOORAA.get(), 0, AOORAPW.get(), 0, 0, 0, 0, 0, AOORMSR.get(), 0, 0, AOORRT.get(), AOORRCT.get(), AOORRF.get(), AOORAT.get(), UserID)).pack(side="bottom", pady=5)
+        tk.Label(row11, text="User: " + UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row11, text=" ").pack(side="left", padx=180, pady=5)
+        tk.Button(row11, text="Atrium Egram", command=lambda:
+                  egramSwitch(1)).pack(side="left", pady=5)
+        tk.Button(row11, text="Ventricle Egram", command=lambda:
+                  egramSwitch(2)).pack(side="left", pady=5)
+        tk.Button(row11, text="Dual Egram", command=lambda:
+                  egramSwitch(3)).pack(side="left", pady=5)
+
+
+        # VOOR
+        row1 = ttk.Frame(VOORTab)
+        row1.pack()
+        row2 = ttk.Frame(VOORTab)
+        row2.pack()
+        row3 = ttk.Frame(VOORTab)
+        row3.pack()
+        row4 = ttk.Frame(VOORTab)
+        row4.pack()
+        row5 = ttk.Frame(VOORTab)
+        row5.pack()
+        row10 = ttk.Frame(VOORTab)
+        row10.pack()
+        row11 = ttk.Frame(VOORTab)
+        row11.pack()
+        tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=10, pady=5)
+        VOORLRL = tk.Scale(row1, from_=30, to=175, length=300, tickinterval=15, orient=tk.HORIZONTAL)
+        VOORLRL.pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=10, pady=5)
+        VOORURL = tk.Scale(row2, from_=50, to=175, length=300, tickinterval=15, orient=tk.HORIZONTAL)
+        VOORURL.pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Max Sensor Rate (ppm)").pack(side="left", padx=10, pady=5)
+        VOORMSR = tk.Scale(row3, from_=50, to=175, length=300, tickinterval=10, orient=tk.HORIZONTAL)
+        VOORMSR.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Ventricular Amplitude (V)").pack(side="left", padx=5, pady=5)
+        VOORVA = tk.Scale(row4, from_=0.5, to=5, resolution=0.5, length=300, tickinterval=0.5, orient=tk.HORIZONTAL)
+        VOORVA.pack(side="left", padx=5, pady=5)
+        tk.Label(row1, text="Ventricular Pulse Width (ms)").pack(side="left", padx=5, pady=5)
+        VOORVPW = tk.Scale(row1, from_=1, to=10, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        VOORVPW.pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Reaction Time (s)").pack(side="left", padx=34, pady=5)
+        VOORRT = tk.Scale(row2, from_=1, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
+        VOORRT.pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Recovery Time(s)").pack(side="left", padx=35, pady=5)
+        VOORRCT = tk.Scale(row3, from_=5, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
+        VOORRCT.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Response Factor").pack(side="left", padx=36, pady=5)
+        VOORRF = tk.Scale(row4, from_=1, to=16, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        VOORRF.pack(side="left", padx=5, pady=5)
+        tk.Label(row5, text="Activity Threshold").pack(side="left", padx=36, pady=5)
+        VOORAT = tk.Scale(row5, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        VOORAT.pack(side="left", padx=5, pady=5)
+        tk.Button(row10, text="Submit", command=lambda:
+                  update_info(7, VOORLRL.get(), VOORURL.get(), 0, VOORVA.get(), 0, VOORVPW.get(), 0, 0, 0, 0, VOORMSR.get(), 0, 0, VOORRT.get(), VOORRCT.get(), VOORRF.get(), VOORAT.get(), UserID)).pack(side="bottom", pady=5)
+        tk.Label(row11, text="User: " + UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row11, text=" ").pack(side="left", padx=180, pady=5)
+        tk.Button(row11, text="Atrium Egram", command=lambda:
+                  egramSwitch(1)).pack(side="left", pady=5)
+        tk.Button(row11, text="Ventricle Egram", command=lambda:
+                  egramSwitch(2)).pack(side="left", pady=5)
+        tk.Button(row11, text="Dual Egram", command=lambda:
+                  egramSwitch(3)).pack(side="left", pady=5)
+
+
+        # AAIR
+        row1 = ttk.Frame(AAIRTab)
+        row1.pack()
+        row2 = ttk.Frame(AAIRTab)
+        row2.pack()
+        row3 = ttk.Frame(AAIRTab)
+        row3.pack()
+        row4 = ttk.Frame(AAIRTab)
+        row4.pack()
+        row5 = ttk.Frame(AAIRTab)
+        row5.pack()
+        row6 = ttk.Frame(AAIRTab)
+        row6.pack()
+        row7 = ttk.Frame(AAIRTab)
+        row7.pack()
+        row8 = ttk.Frame(AAIRTab)
+        row8.pack()
+        row9 = ttk.Frame(AAIRTab)
+        row9.pack()
+        row10 = ttk.Frame(AAIRTab)
+        row10.pack()
+        row11 = ttk.Frame(AAIRTab)
+        row11.pack()
+        row12 = ttk.Frame(AAIRTab)
+        row12.pack()
+        row13 = ttk.Frame(AAIRTab)
+        row13.pack()
+        row14 = ttk.Frame(AAIRTab)
+        row14.pack()
+        tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=9, pady=5)
+        AAIRLRL = tk.Scale(row1, from_=30, to=175, length=300, tickinterval=15, orient=tk.HORIZONTAL)
+        AAIRLRL.pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=9, pady=5)
+        AAIRURL = tk.Scale(row2, from_=50, to=175, length=300, tickinterval=15, orient=tk.HORIZONTAL)
+        AAIRURL.pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Max Sensor Rate (ppm)").pack(side="left", padx=9, pady=5)
+        AAIRMSR = tk.Scale(row3, from_=50, to=175, length=300, tickinterval=10, orient=tk.HORIZONTAL)
+        AAIRMSR.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Atrial Amplitude (V)").pack(side="left", padx=19, pady=5)
+        AAIRAA = tk.Scale(row4, from_=0.5, resolution=0.5, to=5, length=300, tickinterval=0.5, orient=tk.HORIZONTAL)
+        AAIRAA.pack(side="left", padx=5, pady=5)
+        tk.Label(row5, text="Atrial Pulse Width (ms)").pack(side="left", padx=12, pady=5)
+        AAIRAPW = tk.Scale(row5, from_=1, to=10, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        AAIRAPW.pack(side="left", padx=5, pady=5)
+        tk.Label(row6, text="Atrial Sense Threshold (mV)").pack(side="left", padx=0, pady=5)
+        AAIRAS = tk.Scale(row6, from_=0.5, to=3.3, resolution=0.1, length=300, tickinterval=0.3, orient=tk.HORIZONTAL)
+        AAIRAS.pack(side="left", padx=5, pady=5)
+        tk.Label(row1, text="ARP (ms)").pack(side="left", padx=29, pady=5)
+        AAIRARP = tk.Scale(row1, from_=150, to=500, length=300, tickinterval=30, orient=tk.HORIZONTAL)
+        AAIRARP.pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="PVARP (ms)").pack(side="left", padx=22, pady=5)#########################################
+        AAIRPVARP = tk.Scale(row2, from_=150, to=500, length=300, tickinterval=30, orient=tk.HORIZONTAL)
+        AAIRPVARP.pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Reaction Time (s)").pack(side="left", padx=6, pady=5)
+        AAIRRT = tk.Scale(row3, from_=1, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
+        AAIRRT.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Recovery Time(s)").pack(side="left", padx=7, pady=5)
+        AAIRRCT = tk.Scale(row4, from_=5, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
+        AAIRRCT.pack(side="left", padx=5, pady=5)
+        tk.Label(row5, text="Response Factor").pack(side="left", padx=9, pady=5)
+        AAIRRF = tk.Scale(row5, from_=1, to=16, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        AAIRRF.pack(side="left", padx=5, pady=5)
+        tk.Label(row6, text="Activity Threshold").pack(side="left", padx=4, pady=5)
+        AAIRAT = tk.Scale(row6, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        AAIRAT.pack(side="left", padx=5, pady=5)
+        tk.Button(row13, text="Submit", command=lambda:
+                  update_info(8, AAIRLRL.get(), AAIRURL.get(), AAIRAA.get(), 0, AAIRAPW.get(), 0, AAIRAS.get(), 0, AAIRARP.get(), 0, AAIRMSR.get(), AAIRPVARP.get(), 0, AAIRRT.get(), AAIRRCT.get(), AAIRRF.get(), AAIRAT.get(), UserID)).pack(side="bottom", pady=5)
+        tk.Label(row14, text="User: " + UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row14, text=" ").pack(side="left", padx=180, pady=5)
+        tk.Button(row14, text="Atrium Egram", command=lambda:
+                  egramSwitch(1)).pack(side="left", pady=5)
+        tk.Button(row14, text="Ventricle Egram", command=lambda:
+                  egramSwitch(2)).pack(side="left", pady=5)
+        tk.Button(row14, text="Dual Egram", command=lambda:
+                  egramSwitch(3)).pack(side="left", pady=5)
+
+
+        # VVIR
+        row1 = ttk.Frame(VVIRTab)
+        row1.pack()
+        row2 = ttk.Frame(VVIRTab)
+        row2.pack()
+        row3 = ttk.Frame(VVIRTab)
+        row3.pack()
+        row4 = ttk.Frame(VVIRTab)
+        row4.pack()
+        row5 = ttk.Frame(VVIRTab)
+        row5.pack()
+        row6 = ttk.Frame(VVIRTab)
+        row6.pack()
+        row7 = ttk.Frame(VVIRTab)
+        row7.pack()
+        row8 = ttk.Frame(VVIRTab)
+        row8.pack()
+        row9 = ttk.Frame(VVIRTab)
+        row9.pack()
+        row10 = ttk.Frame(VVIRTab)
+        row10.pack()
+        row11 = ttk.Frame(VVIRTab)
+        row11.pack()
+        row12 = ttk.Frame(VVIRTab)
+        row12.pack()
+        row13 = ttk.Frame(VVIRTab)
+        row13.pack()
+        tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=17, pady=5)
+        VVIRLRL = tk.Scale(row1, from_=30, to=175, length=300, tickinterval=15, orient=tk.HORIZONTAL)
+        VVIRLRL.pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=17, pady=5)
+        VVIRURL = tk.Scale(row2, from_=50, to=175, length=300, tickinterval=15, orient=tk.HORIZONTAL)
+        VVIRURL.pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Max Sensor Rate (ppm)").pack(side="left", padx=17, pady=5)
+        VVIRMSR = tk.Scale(row3, from_=50, to=175, length=300, tickinterval=10, orient=tk.HORIZONTAL)
+        VVIRMSR.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Ventricular Amplitude (V)").pack(side="left", padx=12, pady=5)
+        VVIRVA = tk.Scale(row4, from_=0.5, to=5, resolution=0.5, length=300, tickinterval=0.5, orient=tk.HORIZONTAL)
+        VVIRVA.pack(side="left", padx=5, pady=5)
+        tk.Label(row5, text="Ventricular Pulse Width (ms)").pack(side="left", padx=5, pady=5)
+        VVIRVPW = tk.Scale(row5, from_=1, to=10, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        VVIRVPW.pack(side="left", padx=5, pady=5)
+        tk.Label(row1, text="Ventricular Sense Threshold (mV)").pack(side="left", padx=0, pady=5)
+        VVIRVS = tk.Scale(row1, from_=0.5, to=3.3, resolution=0.1, length=300, tickinterval=0.3, orient=tk.HORIZONTAL)
+        VVIRVS.pack(side="left", padx=0, pady=5)
+        tk.Label(row2, text="VRP (ms)").pack(side="left", padx=63, pady=5)
+        VVIRVRP = tk.Scale(row2, from_=150, to=500, length=300, tickinterval=30, orient=tk.HORIZONTAL)
+        VVIRVRP.pack(side="left", padx=1, pady=5)
+        tk.Label(row3, text="Reaction Time (s)").pack(side="left", padx=40, pady=5)
+        VVIRRT = tk.Scale(row3, from_=2, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
+        VVIRRT.pack(side="left", padx=1, pady=5)
+        tk.Label(row4, text="Recovery Time(s)").pack(side="left", padx=41, pady=5)
+        VVIRRCT = tk.Scale(row4, from_=5, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
+        VVIRRCT.pack(side="left", padx=1, pady=5)
+        tk.Label(row5, text="Response Factor").pack(side="left", padx=43, pady=5)
+        VVIRRF = tk.Scale(row5, from_=1, to=16, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        VVIRRF.pack(side="left", padx=1, pady=5)
+        tk.Label(row11, text="Activity Threshold").pack(side="left", padx=35, pady=5)
+        VVIRAT = tk.Scale(row11, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        VVIRAT.pack(side="left", padx=5, pady=5)
+        tk.Button(row12, text="Submit", command=lambda:
+                  update_info(9, VVIRLRL.get(), VVIRURL.get(), 0, VVIRVA.get(), 0, VVIRVPW.get(), 0, VVIRVS.get(), 0, VVIRVRP.get(), VVIRMSR.get(), 0, 0, VVIRRT.get(), VVIRRCT.get(), VVIRRF.get(), VVIRAT.get(), UserID)).pack(side="bottom", pady=5)
+        tk.Label(row13, text="User: " + UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row13, text=" ").pack(side="left", padx=180, pady=5)
+        tk.Button(row13, text="Atrium Egram", command=lambda:
+                  egramSwitch(1)).pack(side="left", pady=5)
+        tk.Button(row13, text="Ventricle Egram", command=lambda:
+                  egramSwitch(2)).pack(side="left", pady=5)
+        tk.Button(row13, text="Dual Egram", command=lambda:
+                  egramSwitch(3)).pack(side="left", pady=5)
+
+
+        # DOOR
+        row1 = ttk.Frame(DOORTab)
+        row1.pack()
+        row2 = ttk.Frame(DOORTab)
+        row2.pack()
+        row3 = ttk.Frame(DOORTab)
+        row3.pack()
+        row4 = ttk.Frame(DOORTab)
+        row4.pack()
+        row5 = ttk.Frame(DOORTab)
+        row5.pack()
+        row6 = ttk.Frame(DOORTab)
+        row6.pack()
+        row7 = ttk.Frame(DOORTab)
+        row7.pack()
+        row8 = ttk.Frame(DOORTab)
+        row8.pack()
+        row9 = ttk.Frame(DOORTab)
+        row9.pack()
+        row10 = ttk.Frame(DOORTab)
+        row10.pack()
+        row11 = ttk.Frame(DOORTab)
+        row11.pack()
+        row12 = ttk.Frame(DOORTab)
+        row12.pack()
+        row13 = ttk.Frame(DOORTab)
+        row13.pack()
+        row14 = ttk.Frame(DOORTab)
+        row14.pack()
+        tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=10, pady=5)
+        DOORLRL = tk.Scale(row1, from_=30, to=175, length=300, tickinterval=15, orient=tk.HORIZONTAL)
+        DOORLRL.pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=10, pady=5)
+        DOORURL = tk.Scale(row2, from_=50, to=175, length=300, tickinterval=15, orient=tk.HORIZONTAL)
+        DOORURL.pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Max Sensor Rate (ppm)").pack(side="left", padx=10, pady=5)
+        DOORMSR = tk.Scale(row3, from_=50, to=175, length=300, tickinterval=10, orient=tk.HORIZONTAL)
+        DOORMSR.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Fixed AV Delay (ms)").pack(side="left", padx=18, pady=5)
+        DOORFAVD = tk.Scale(row4, from_=70, to=300, length=300, tickinterval=20, orient=tk.HORIZONTAL)
+        DOORFAVD.pack(side="left", padx=5, pady=5)
+        tk.Label(row5, text="Atrial Amplitude (V)").pack(side="left", padx=19, pady=5)
+        DOORAA = tk.Scale(row5, from_=0.5, to=5, resolution=0.5, length=300, tickinterval=0.5, orient=tk.HORIZONTAL)
+        DOORAA.pack(side="left", padx=5, pady=5)
+        tk.Label(row6, text="Ventricular Amplitude (V)").pack(side="left", padx=5, pady=5)
+        DOORVA = tk.Scale(row6, from_=0.5, to=5, resolution=0.5, length=300, tickinterval=0.5, orient=tk.HORIZONTAL)
+        DOORVA.pack(side="left", padx=5, pady=5)
+        tk.Label(row1, text="Atrial Pulse Width (ms)").pack(side="left", padx=20, pady=5)
+        DOORAPW = tk.Scale(row1, from_=1, to=10, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        DOORAPW.pack(side="left", padx=5, pady=5)
+        tk.Label(row2, text="Ventricular Pulse Width (ms)").pack(side="left", padx=5, pady=5)
+        DOORVPW = tk.Scale(row2, from_=1, to=10, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        DOORVPW.pack(side="left", padx=5, pady=5)
+        tk.Label(row3, text="Reaction Time (s)").pack(side="left", padx=34, pady=5)
+        DOORRT = tk.Scale(row3, from_=1, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
+        DOORRT.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Recovery Time(s)").pack(side="left", padx=35, pady=5)
+        DOORRCT = tk.Scale(row4, from_=5, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
+        DOORRCT.pack(side="left", padx=5, pady=5)
+        tk.Label(row5, text="Response Factor").pack(side="left", padx=38, pady=5)
+        DOORRF = tk.Scale(row5, from_=1, to=16, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        DOORRF.pack(side="left", padx=5, pady=5)
+        tk.Label(row6, text="Activity Threshold").pack(side="left", padx=33, pady=5)
+        DOORAT = tk.Scale(row6, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        DOORAT.pack(side="left", padx=5, pady=5)
+        tk.Button(row13, text="Submit", command=lambda:
+                  update_info(10, DOORLRL.get(), DOORURL.get(), DOORAA.get(), DOORVA.get(), DOORAPW.get(), DOORVPW.get(), 0, 0, 0, 0, DOORMSR.get(), 0, DOORFAVD.get(), DOORRT.get(), DOORRCT.get(), DOORRF.get(), DOORAT.get(), UserID)).pack(side="bottom", pady=5)
+        tk.Label(row14, text="User: " + UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row14, text=" ").pack(side="left", padx=180, pady=5)
+        tk.Button(row14, text="Atrium Egram", command=lambda:
+                  egramSwitch(1)).pack(side="left", pady=5)
+        tk.Button(row14, text="Ventricle Egram", command=lambda:
+                  egramSwitch(2)).pack(side="left", pady=5)
+        tk.Button(row14, text="Dual Egram", command=lambda:
+                  egramSwitch(3)).pack(side="left", pady=5)
+
+        
+        # DDDR
+        row1 = ttk.Frame(DDDRTab)
+        row1.pack()
+        row2 = ttk.Frame(DDDRTab)
+        row2.pack()
+        row3 = ttk.Frame(DDDRTab)
+        row3.pack()
+        row4 = ttk.Frame(DDDRTab)
+        row4.pack()
+        row5 = ttk.Frame(DDDRTab)
+        row5.pack()
+        row6 = ttk.Frame(DDDRTab)
+        row6.pack()
+        row7 = ttk.Frame(DDDRTab)
+        row7.pack()
+        row8 = ttk.Frame(DDDRTab)
+        row8.pack()
+        row9 = ttk.Frame(DDDRTab)
+        row9.pack()
+        row10 = ttk.Frame(DDDRTab)
+        row10.pack()
+        row11 = ttk.Frame(DDDRTab)
+        row11.pack()
+        row12 = ttk.Frame(DDDRTab)
+        row12.pack()
+        row13 = ttk.Frame(DDDRTab)
+        row13.pack()
+        row14 = ttk.Frame(DDDRTab)
+        row14.pack()
+        row15 = ttk.Frame(DDDRTab)
+        row15.pack()
+        row16 = ttk.Frame(DDDRTab)
+        row16.pack()
+        row17 = ttk.Frame(DDDRTab)
+        row17.pack()
+        row18 = ttk.Frame(DDDRTab)
+        row18.pack()
+        row19 = ttk.Frame(DDDRTab)
+        row19.pack()
+        tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=17, pady=5)
+        DDDRLRL = tk.Scale(row1, from_=30, to=175, length=300, tickinterval=15, orient=tk.HORIZONTAL)
+        DDDRLRL.pack(side="left", padx=5, pady=0)
+        tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=15, pady=5)
+        DDDRURL = tk.Scale(row2, from_=50, to=175, length=300, tickinterval=15, orient=tk.HORIZONTAL)
+        DDDRURL.pack(side="left", padx=5, pady=0)
+        tk.Label(row3, text="Max Sensor Rate (ppm)").pack(side="left", padx=20, pady=5)
+        DDDRMSR = tk.Scale(row3, from_=50, to=175, length=300, tickinterval=10, orient=tk.HORIZONTAL)
+        DDDRMSR.pack(side="left", padx=2, pady=0)
+        tk.Label(row4, text="Fixed AV Delay (ms)").pack(side="left", padx=27, pady=5)
+        DDDRFAVD = tk.Scale(row4, from_=70, to=300, length=300, tickinterval=20, orient=tk.HORIZONTAL)
+        DDDRFAVD.pack(side="left", padx=1, pady=0)
+        tk.Label(row5, text="Atrial Amplitude (V)").pack(side="left", padx=27, pady=5)
+        DDDRAA = tk.Scale(row5, from_=0.5, to=5, resolution=0.5, length=300, tickinterval=0.5, orient=tk.HORIZONTAL)
+        DDDRAA.pack(side="left", padx=5, pady=0)
+        tk.Label(row6, text="Ventricular Amplitude (V)").pack(side="left", padx=12, pady=5)
+        DDDRVA = tk.Scale(row6, from_=0.5, to=5, resolution=0.5, length=300, tickinterval=0.5, orient=tk.HORIZONTAL)
+        DDDRVA.pack(side="left", padx=5, pady=0)
+        tk.Label(row7, text="Atrial Pulse Width (ms)").pack(side="left", padx=18, pady=5)
+        DDDRAPW = tk.Scale(row7, from_=1, to=10, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        DDDRAPW.pack(side="left", padx=5, pady=0)
+        tk.Label(row8, text="Ventricular Pulse Width (ms)").pack(side="left", padx=6, pady=5)
+        DDDRVPW = tk.Scale(row8, from_=1, to=10, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        DDDRVPW.pack(side="left", padx=0, pady=0)
+        tk.Label(row1, text="Atrial Sense Threshold (mV)").pack(side="left", padx=16, pady=5)
+        DDDRAS = tk.Scale(row1, from_=0.5, to=3.3, resolution=0.1, length=300, tickinterval=0.3, orient=tk.HORIZONTAL)
+        DDDRAS.pack(side="left", padx=6, pady=0)
+        tk.Label(row2, text="Ventricular Sense Threshold (mV)").pack(side="left", padx=5, pady=5)
+        DDDRVS = tk.Scale(row2, from_=0.5, to=3.3, resolution=0.1, length=300, tickinterval=0.3, orient=tk.HORIZONTAL)
+        DDDRVS.pack(side="left", padx=0, pady=0)
+        tk.Label(row3, text="ARP (ms)").pack(side="left", padx=67, pady=5)
+        DDDRARP = tk.Scale(row3, from_=150, to=500, length=300, tickinterval=30, orient=tk.HORIZONTAL)
+        DDDRARP.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="VRP (ms)").pack(side="left", padx=70, pady=5)
+        DDDRVRP = tk.Scale(row4, from_=150, to=500, length=300, tickinterval=30, orient=tk.HORIZONTAL)
+        DDDRVRP.pack(side="left", padx=0, pady=5)
+        tk.Label(row5, text="PVARP (ms)").pack(side="left", padx=57, pady=5)#########################################
+        DDDRPVARP = tk.Scale(row5, from_=150, to=500, length=300, tickinterval=30, orient=tk.HORIZONTAL)
+        DDDRPVARP.pack(side="left", padx=5, pady=5)
+        tk.Label(row6, text="Reaction Time (s)").pack(side="left", padx=42, pady=5)
+        DDDRRT = tk.Scale(row6, from_=1, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
+        DDDRRT.pack(side="left", padx=5, pady=0)
+        tk.Label(row7, text="Recovery Time(s)").pack(side="left", padx=43, pady=5)
+        DDDRRCT = tk.Scale(row7, from_=5, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
+        DDDRRCT.pack(side="left", padx=5, pady=0)
+        tk.Label(row8, text="Response Factor").pack(side="left", padx=47, pady=5)
+        DDDRRF = tk.Scale(row8, from_=1, to=16, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        DDDRRF.pack(side="left", padx=7, pady=0)
+        tk.Label(row17, text="Activity Threshold").pack(side="left", padx=28, pady=5)
+        DDDRAT = tk.Scale(row17, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
+        DDDRAT.pack(side="left", padx=5, pady=0)
+        tk.Button(row18, text="Submit", command=lambda:
+                  update_info(10, DDDRLRL.get(), DDDRURL.get(), DDDRAA.get(), DDDRVA.get(), DDDRAPW.get(), DDDRVPW.get(), DDDRAS.get(), DDDRVS.get(), DDDRARP.get(), DDDRVRP.get(), DDDRMSR.get(), DDDRPVARP.get(), DDDRFAVD.get(), DDDRRT.get(), DDDRRCT.get(), DDDRRF.get(), DDDRAT.get(), UserID)).pack(side="bottom", pady=5)
+        tk.Label(row19, text="User: " + UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row19, text=" ").pack(side="left", padx=180, pady=5)
+        tk.Button(row19, text="Atrium Egram", command=lambda:
+                  egramSwitch(1)).pack(side="left", pady=5)
+        tk.Button(row19, text="Ventricle Egram", command=lambda:
+                  egramSwitch(2)).pack(side="left", pady=5)
+        tk.Button(row19, text="Dual Egram", command=lambda:
+                  egramSwitch(3)).pack(side="left", pady=5)
