@@ -31,7 +31,7 @@ def list_ports():
     return connected_ports
 
 
-def to_bytes(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, PVARP, FAVD, user):
+def to_bytes(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh):
     """
     Going to need some sort of order here.
     Judging by the params we have laid out, something like this: 
@@ -45,20 +45,26 @@ def to_bytes(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxS
 
     # Something like this seems to be the proper thing to do. We'll have to see
 
-    # We can return this array of bytes for sending over serial
-    return bytearray(struct.pack('lllddllddllllll', mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, PVARP, FAVD, user)) # todo: honestly don't know if this is fine or not. We'll have to see.
+    """
+    Mostafa was sayng that uint8s can be denoted for Python purposes to shorts or char? 
+    doubles are d
+    
+
+    """
+    # todo: we can write just the struct.pack????? Do we need to return a bytesarray?!?!?!?!
+    return bytearray(struct.pack('HIIddIIddIIIIIHHI', mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh))  # todo: honestly don't know if this is fine or not. We'll have to see.
 
 
 baud_rate = 115200
 # You can define Serial objects with unique parameters, so we can have different parities, bytesize etc. will be handy!!
-board = serial.Serial(
-                        port='COM1',
-                        baudrate=baud_rate,
-                        parity=serial.PARITY_NONE,
-                        bytesize=8
-
-                    )
-# board.write(to_bytes(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)) # Writing to serial seems to be fairly simple
+# board = serial.Serial(
+#                         port='COM1',
+#                         baudrate=baud_rate,
+#                         parity=serial.PARITY_NONE,
+#                         bytesize=8
+#
+#                     )
+print(to_bytes(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17)) # Writing to serial seems to be fairly simple
 
 class Serial_functions:
     @classmethod
@@ -72,8 +78,8 @@ class Serial_functions:
         # print(board.read(b))
         serial_obj.close()
 
-Serial_functions.serial_read(board)
 
+# Serial_functions.serial_read(board)
 
 def communicate_parameters(username):
     with open(UPLOAD_LOCATION) as f:
