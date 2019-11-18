@@ -1,12 +1,17 @@
 import serial
 import struct
 import serial.tools.list_ports
+import json
+import os
+import tkinter as tk
+from tkinter import ttk
+from Interface import *
 # todo: Here we have the baud rate, defined in the lecture slides/serial guide.
 #   No idea what serial port we're going to be using, so for now it will be set to COM2.
 #   We definitely need to have parity bits... I don't know how even to use a parity bit... is the error detection done
 #   automatically, or...?
 
-
+UPLOAD_LOCATION = os.getcwd() + '\SerialComm.json'
 """
 I imagine that this will be best done by a function, or we could hard code it each time with a unique version, depending 
 on which pacing mode we use, etc., since we will be using more or less parametes depending on a few things.
@@ -55,14 +60,49 @@ board = serial.Serial(
                     )
 # board.write(to_bytes(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)) # Writing to serial seems to be fairly simple
 
-def serial_read(serial_obj):
+class Serial_functions:
+    @classmethod
+    def serial_read(cls, serial_obj):
 
-    print("top level..")
-    for line in serial_obj.readlines(8): # read 8 bytes
-        print("yo!")
-        print(line)
-    # b = board.inWaiting()
-    # print(board.read(b))
-    serial_obj.close()
+        print("top level..")
+        for line in serial_obj.readlines(8): # read 8 bytes
+            print("yo!")
+            print(line)
+        # b = board.inWaiting()
+        # print(board.read(b))
+        serial_obj.close()
 
-serial_read(board)
+Serial_functions.serial_read(board)
+
+
+def communicate_parameters(username):
+    with open(UPLOAD_LOCATION) as f:
+        pacemaker_params = json.load(f)[username]
+        # todo: in this case we'll need to make sure the user exists when we do this
+        try:
+            """
+            Something like this is basically what we're going to have to do afaik so I'll leave it at that
+            """
+            data = to_bytes(
+                # todo: maybe switch to dict.get method instead???!!!!
+                pacemaker_params["Mode"],
+                pacemaker_params["Low_Limit"],
+                pacemaker_params["Up_Limit"],
+                pacemaker_params["A_Amp"],
+                pacemaker_params["V_Amp"],
+                pacemaker_params["A_PW"],
+                pacemaker_params["V_PW"],
+                pacemaker_params["A_Sense"],
+                pacemaker_params["V_Sense"],
+                pacemaker_params["ARP"],
+                pacemaker_params["VRP"],
+                pacemaker_params["Max_Sense"],
+                pacemaker_params["PVARP"],
+                pacemaker_params["FAVD"],
+                username
+                    )
+            board.write(data)
+        except KeyError as e:
+            messagebox.showinfo("Error", "Something went critically wrong: " + str(e))
+
+
