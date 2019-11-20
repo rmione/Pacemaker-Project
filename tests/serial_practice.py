@@ -52,19 +52,20 @@ def to_bytes(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxS
 
     """
     # todo: we can write just the struct.pack????? Do we need to return a bytesarray?!?!?!?!
-    return bytearray(struct.pack('HIIddIIddIIIIIHHI', mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh))  # todo: honestly don't know if this is fine or not. We'll have to see.
+    return bytearray(struct.pack('HIIddIIddIIIIIHHI', mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, FAVD, ReTime, RecTime, RespFact, AThresh, MaxSense))  # todo: honestly don't know if this is fine or not. We'll have to see.
 
 
 baud_rate = 115200
 # You can define Serial objects with unique parameters, so we can have different parities, bytesize etc. will be handy!!
-# board = serial.Serial(
-#                         port='COM1',
-#                         baudrate=baud_rate,
-#                         parity=serial.PARITY_NONE,
-#                         bytesize=8
-#
-#                     )
+board = serial.Serial(
+                        port='COM1',
+                        baudrate=baud_rate,
+                        parity=serial.PARITY_NONE,
+                        bytesize=8
+
+                    )
 print(to_bytes(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17)) # Writing to serial seems to be fairly simple
+
 
 class Serial_functions:
     @classmethod
@@ -102,10 +103,9 @@ def communicate_parameters(username):
                 pacemaker_params["V_Sense"],
                 pacemaker_params["ARP"],
                 pacemaker_params["VRP"],
-                pacemaker_params["Max_Sense"],
                 pacemaker_params["PVARP"],
                 pacemaker_params["FAVD"],
-                username
+                pacemaker_params["Max_Sense"]
                     )
             board.write(data)
         except KeyError as e:
