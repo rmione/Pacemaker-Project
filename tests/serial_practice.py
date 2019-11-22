@@ -5,6 +5,9 @@ import json
 import os
 import tkinter as tk
 from tkinter import ttk
+import sys
+sys.path.insert(0, os.getcwd()+r'\.\Interface.py')
+
 from Interface import *
 # todo: Here we have the baud rate, defined in the lecture slides/serial guide.
 #   No idea what serial port we're going to be using, so for now it will be set to COM2.
@@ -38,11 +41,6 @@ def to_bytes(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxS
         mode:lowerratelim:upperratelim:... and so on, and so forth
     """
 
-
-    # todo:
-    #  for now we are going to assume longs. No idea as to what behaviour this entails but could be a catch all!!!!
-    #  keep in mind these are signed longs, so i think it will work as a catch-all
-
     # Something like this seems to be the proper thing to do. We'll have to see
 
     """
@@ -51,20 +49,20 @@ def to_bytes(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxS
     
 
     """
-    # todo: we can write just the struct.pack????? Do we need to return a bytesarray?!?!?!?!
+    # todo: Mostafa said struct.pack() can be directly written to serial. But let's return the bytesarray
     return bytearray(struct.pack('HIIddIIddIIIIIHHII', mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, FAVD, ReTime, RecTime, RespFact, AThresh, MaxSense, 255))  # todo: honestly don't know if this is fine or not. We'll have to see.
     # DCM to Board= FF, Board to DCM = 00!
 
 baud_rate = 115200
 # You can define Serial objects with unique parameters, so we can have different parities, bytesize etc. will be handy!!
-# board = serial.Serial(
-#                         port='COM1',
-#                         baudrate=baud_rate,
-#                         parity=serial.PARITY_NONE,
-#                         bytesize=8
-#
-#                     )
-print(to_bytes(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17)) # Writing to serial seems to be fairly simple
+board = serial.Serial(
+                        port='COM7',
+                        baudrate=baud_rate,
+                        parity=serial.PARITY_NONE,
+                        bytesize=8
+
+                    )
+print(type(to_bytes(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17))) # Writing to serial seems to be fairly simple
 
 
 class Serial_functions:
