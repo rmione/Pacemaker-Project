@@ -42,7 +42,7 @@ def create_user(username, password, frame_class):
         database.update({en_user: en_pass})
         IO.dump(DUMP_LOCATION, database)
         # We passed an object through (master in this case)
-        frame_class.switch_frame(Menu)
+        frame_class.switch_frame(_Menu)
     elif database.get(en_user):
         messagebox.showinfo("Username already exists.", "Please login with this user or attempt to create a new one.")
         return
@@ -66,7 +66,7 @@ def login_test(username, password, frame_class):
     if (len(en_user) == 0) or (len(en_pass) == 0):
         messagebox.showinfo("Invalid credentials", "Either your username or password are invalid, try again.")
     elif database.get(en_user) == en_pass:
-        frame_class.switch_frame(Menu)
+        frame_class.switch_frame(_Menu)
     else:
         messagebox.showinfo("User does not exist", "This user does not exist in the database, try again.")
 
@@ -120,7 +120,8 @@ def animate(i):
         for value in values:
             if len(value) > 1:
                 x, y = value.split(',')
-                xV.append(float(x))
+                xV.append(float
+                          (x))
                 yV.append(float(y))
                 
     ax1.clear()
@@ -128,14 +129,17 @@ def animate(i):
 
 ''' ============================================================= '''
 
-class SampleApp(tk.Tk):
+
+class DCM(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self._frame = None
-        self.switch_frame(StartUp)
+        self.switch_frame(_StartUp)
 
     def switch_frame(self, frame_class):
-        """Destroys current frame and replaces it with a new one."""
+        """
+        Destroys current frame and replaces it with a new one.
+        """
         new_frame = frame_class(self)
         if self._frame is not None:
             self._frame.destroy()
@@ -143,18 +147,18 @@ class SampleApp(tk.Tk):
         self._frame.pack()
 
 
-class StartUp(tk.Frame):
+class _StartUp(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
         master.resizable(False, False)###################################################
         tk.Label(self, text="Welcome").pack()
         tk.Button(self, text="Login",
-                  command=lambda: master.switch_frame(Login)).pack(padx=10, pady=10)
+                  command=lambda: master.switch_frame(_Login)).pack(padx=10, pady=10)
         tk.Button(self, text="Create User",
-                  command=lambda: master.switch_frame(CreateUser)).pack(padx=10, pady=10)
+                  command=lambda: master.switch_frame(_CreateUser)).pack(padx=10, pady=10)
 
 
-class Login(tk.Frame):
+class _Login(tk.Frame):
     def __init__(self, master):
         v1 = tk.StringVar()
         v2 = tk.StringVar()
@@ -167,12 +171,12 @@ class Login(tk.Frame):
         tk.Entry(self, textvariable=v2).pack(padx=5)
         tk.Button(self, text="Submit", command=lambda: login_test(v1, v2, master)).pack()
         tk.Button(self, text="Return to start page",
-                  command=lambda: master.switch_frame(StartUp)).pack()
+                  command=lambda: master.switch_frame(_StartUp)).pack()
         if login == 1:
-            master.switch_frame(Menu)
+            master.switch_frame(_Menu)
 
 
-class CreateUser(tk.Frame):
+class _CreateUser(tk.Frame):
     def __init__(self, master):
         v1 = tk.StringVar()
         v2 = tk.StringVar()
@@ -185,10 +189,10 @@ class CreateUser(tk.Frame):
         tk.Button(self, text="Create",
                   command=lambda: create_user(v1, v2, master)).pack()
         tk.Button(self, text="Return to start page",
-                  command=lambda: master.switch_frame(StartUp)).pack()
+                  command=lambda: master.switch_frame(_StartUp)).pack()
         
 
-class Menu(tk.Frame):
+class _Menu(tk.Frame):
     def __init__(self, master):      
         tk.Frame.__init__(self, master)
         master.resizable(False, False)
