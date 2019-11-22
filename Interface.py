@@ -44,17 +44,13 @@ def create_user(username, password, frame_class):
         # We passed an object through (master in this case)
         frame_class.switch_frame(Menu)
     elif database.get(en_user):
-        print("Username already exists.")
         messagebox.showinfo("Username already exists.", "Please login with this user or attempt to create a new one.")
         return
     elif len(en_user) == 0:
-        print("Please enter username")
-
         messagebox.showinfo("Please enter username", "Enter a valid username.")
     elif len(en_pass) == 0:
-        print("Please enter password")
+        messagebox.showinfo("Please enter password", "Enter a valid password.")
     else:
-        print("Database is full")
         messagebox.showinfo("Database is full", "The database cannot accept any more users.")
 
 
@@ -68,12 +64,10 @@ def login_test(username, password, frame_class):
     en_pass = IO.encrypt(str(password.get()))
 
     if (len(en_user) == 0) or (len(en_pass) == 0):
-        print("Invalid credentials")
         messagebox.showinfo("Invalid credentials", "Either your username or password are invalid, try again.")
     elif database.get(en_user) == en_pass:
         frame_class.switch_frame(Menu)
     else:
-        print("User does not exist")
         messagebox.showinfo("User does not exist", "This user does not exist in the database, try again.")
 
 def egramSwitch(value):
@@ -85,17 +79,17 @@ def egramSwitch(value):
     if (value == 1):
         AEgram = 1
         VEgram = 0
-        ani = animation.FuncAnimation(fig, animate, interval=10)
+        ani = animation.FuncAnimation(fig, animate, interval=100)
         plt.show()
     elif (value == 2):
         AEgram = 0
         VEgram = 1
-        ani = animation.FuncAnimation(fig, animate, interval=10)
+        ani = animation.FuncAnimation(fig, animate, interval=100)
         plt.show()
     elif (value == 3):
         AEgram = 1
         VEgram = 1
-        ani = animation.FuncAnimation(fig, animate, interval=10)
+        ani = animation.FuncAnimation(fig, animate, interval=100)
         plt.show()
     else:
         messagebox.showinfo("OOPS", "Something went wrong.")
@@ -476,19 +470,19 @@ class Menu(tk.Frame):
         tk.Label(row4, text="Atrial Amplitude (V)").pack(side="left", padx=15, pady=5)
         AOORAA = tk.Scale(row4, from_=0.5, to=5, resolution=0.5, length=300, tickinterval=0.5, orient=tk.HORIZONTAL)
         AOORAA.pack(side="left", padx=5, pady=5)
-        tk.Label(row1, text="Atrial Pulse Width (ms)").pack(side="left", padx=5, pady=5)
+        tk.Label(row1, text="Atrial Pulse Width (ms)").pack(side="left", padx=12, pady=5)
         AOORAPW = tk.Scale(row1, from_=1, to=10, length=300, tickinterval=1, orient=tk.HORIZONTAL)
         AOORAPW.pack(side="left", padx=5, pady=5)
-        tk.Label(row2, text="Reaction Time (s)").pack(side="left", padx=19, pady=5)
+        tk.Label(row2, text="Reaction Time (s)").pack(side="left", padx=29, pady=5)
         AOORRT = tk.Scale(row2, from_=1, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
         AOORRT.pack(side="left", padx=5, pady=5)
-        tk.Label(row3, text="Recovery Time(s)").pack(side="left", padx=20, pady=5)
+        tk.Label(row3, text="Recovery Time(s)").pack(side="left", padx=25, pady=5)
         AOORRCT = tk.Scale(row3, from_=5, to=30, length=300, tickinterval=2, orient=tk.HORIZONTAL)
         AOORRCT.pack(side="left", padx=5, pady=5)
-        tk.Label(row4, text="Response Factor").pack(side="left", padx=22, pady=5)
+        tk.Label(row4, text="Response Factor (Slow-Fast)").pack(side="left", padx=0, pady=5)
         AOORRF = tk.Scale(row4, from_=1, to=16, length=300, tickinterval=1, orient=tk.HORIZONTAL)
         AOORRF.pack(side="left", padx=5, pady=5)
-        tk.Label(row5, text="Activity Threshold").pack(side="left", padx=36, pady=5)
+        tk.Label(row5, text="Activity Threshold (Low-High)").pack(side="left", padx=36, pady=5)
         AOORAT = tk.Scale(row5, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
         AOORAT.pack(side="left", padx=5, pady=5)
         tk.Button(row10, text="Submit", command=lambda:
