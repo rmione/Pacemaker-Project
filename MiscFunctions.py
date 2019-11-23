@@ -173,10 +173,10 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
 def wait_response():
     # 10 seconds
 
-    while True:
-        queue = board.inWaiting()
-        print("yello")
-        print(struct.unpack('<BHHddHHddHHHHHBBHB', queue.read()))
+   
+    board_data = struct.unpack('<BHHddHHddHHHHHBBH', board.read(55)) 
+    
+   
 
 
 
