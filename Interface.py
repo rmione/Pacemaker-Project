@@ -16,7 +16,7 @@ AEgram = 0
 VEgram = 0
 
 ''' ------------------------------------------------------ '''
-def create_user(username, password, frame_class):
+def _create_user(username, password, frame_class):
     """
     This function takes the desired username and password input into the two text boxes in the GUI and does some
     operations.
@@ -54,7 +54,7 @@ def create_user(username, password, frame_class):
         messagebox.showinfo("Database is full", "The database cannot accept any more users.")
 
 
-def login_test(username, password, frame_class):
+def _login_test(username, password, frame_class):
     """Function takes text-variable version of username and password, as well as frame class"""
 
     global UserID
@@ -70,7 +70,7 @@ def login_test(username, password, frame_class):
     else:
         messagebox.showinfo("User does not exist", "This user does not exist in the database, try again.")
 
-def egramSwitch(value):
+def _egramSwitch(value):
     global AEgram
     global VEgram
     style.use('fivethirtyeight')
@@ -79,23 +79,23 @@ def egramSwitch(value):
     if (value == 1):
         AEgram = 1
         VEgram = 0
-        ani = animation.FuncAnimation(fig, animate, interval=100)
+        ani = animation.FuncAnimation(fig, _animate, interval=100)
         plt.show()
     elif (value == 2):
         AEgram = 0
         VEgram = 1
-        ani = animation.FuncAnimation(fig, animate, interval=100)
+        ani = animation.FuncAnimation(fig, _animate, interval=100)
         plt.show()
     elif (value == 3):
         AEgram = 1
         VEgram = 1
-        ani = animation.FuncAnimation(fig, animate, interval=100)
+        ani = animation.FuncAnimation(fig, _animate, interval=100)
         plt.show()
     else:
         messagebox.showinfo("OOPS", "Something went wrong.")
 
         
-def animate(i):
+def _animate(i):
     global fig
     global AEgram
     global VEgram
@@ -169,7 +169,7 @@ class _Login(tk.Frame):
         tk.Entry(self, textvariable=v1).pack()
         tk.Label(self, text="Enter Password").pack()
         tk.Entry(self, textvariable=v2).pack(padx=5)
-        tk.Button(self, text="Submit", command=lambda: login_test(v1, v2, master)).pack()
+        tk.Button(self, text="Submit", command=lambda: _login_test(v1, v2, master)).pack()
         tk.Button(self, text="Return to start page",
                   command=lambda: master.switch_frame(_StartUp)).pack()
         if login == 1:
@@ -187,7 +187,7 @@ class _CreateUser(tk.Frame):
         tk.Label(self, text="Enter Password").pack()
         tk.Entry(self, textvariable=v2).pack()
         tk.Button(self, text="Create",
-                  command=lambda: create_user(v1, v2, master)).pack()
+                  command=lambda: _create_user(v1, v2, master)).pack()
         tk.Button(self, text="Return to start page",
                   command=lambda: master.switch_frame(_StartUp)).pack()
         
@@ -265,11 +265,11 @@ class _Menu(tk.Frame):
         tk.Label(row6, text="User: " + UserID).pack(side="left", padx=5, pady=5)
         tk.Label(row6, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row6, text="Atrium Egram", command=lambda:
-                  egramSwitch(1)).pack(side="left", pady=5)
+                  _egramSwitch(1)).pack(side="left", pady=5)
         tk.Button(row6, text="Ventricle Egram", command=lambda:
-                  egramSwitch(2)).pack(side="left", pady=5)
+                  _egramSwitch(2)).pack(side="left", pady=5)
         tk.Button(row6, text="Dual Egram", command=lambda:
-                  egramSwitch(3)).pack(side="left", pady=5)
+                  _egramSwitch(3)).pack(side="left", pady=5)
 
         # VOO
         row1 = ttk.Frame(VOOTab)
@@ -301,11 +301,11 @@ class _Menu(tk.Frame):
         tk.Label(row6, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row6, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row6, text="Atrium Egram", command=lambda:
-                  egramSwitch(1)).pack(side="left", pady=5)
+                  _egramSwitch(1)).pack(side="left", pady=5)
         tk.Button(row6, text="Ventricle Egram", command=lambda:
-                  egramSwitch(2)).pack(side="left", pady=5)
+                  _egramSwitch(2)).pack(side="left", pady=5)
         tk.Button(row6, text="Dual Egram", command=lambda:
-                  egramSwitch(3)).pack(side="left", pady=5)
+                  _egramSwitch(3)).pack(side="left", pady=5)
 
         # AAI
         row1 = ttk.Frame(AAITab)
@@ -347,11 +347,11 @@ class _Menu(tk.Frame):
         tk.Label(row8, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row8, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row8, text="Atrium Egram", command=lambda:
-                  egramSwitch(1)).pack(side="left", pady=5)
+                  _egramSwitch(1)).pack(side="left", pady=5)
         tk.Button(row8, text="Ventricle Egram", command=lambda:
-                  egramSwitch(2)).pack(side="left", pady=5)
+                  _egramSwitch(2)).pack(side="left", pady=5)
         tk.Button(row8, text="Dual Egram", command=lambda:
-                  egramSwitch(3)).pack(side="left", pady=5)
+                  _egramSwitch(3)).pack(side="left", pady=5)
         
         # VVI
         row1 = ttk.Frame(VVITab)
@@ -393,11 +393,11 @@ class _Menu(tk.Frame):
         tk.Label(row8, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row8, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row8, text="Atrium Egram", command=lambda:
-                  egramSwitch(1)).pack(side="left", pady=5)
+                  _egramSwitch(1)).pack(side="left", pady=5)
         tk.Button(row8, text="Ventricle Egram", command=lambda:
-                  egramSwitch(2)).pack(side="left", pady=5)
+                  _egramSwitch(2)).pack(side="left", pady=5)
         tk.Button(row8, text="Dual Egram", command=lambda:
-                  egramSwitch(3)).pack(side="left", pady=5)
+                  _egramSwitch(3)).pack(side="left", pady=5)
 
 
         # DOO
@@ -440,11 +440,11 @@ class _Menu(tk.Frame):
         tk.Label(row8, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row8, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row8, text="Atrium Egram", command=lambda:
-                  egramSwitch(1)).pack(side="left", pady=5)
+                  _egramSwitch(1)).pack(side="left", pady=5)
         tk.Button(row8, text="Ventricle Egram", command=lambda:
-                  egramSwitch(2)).pack(side="left", pady=5)
+                  _egramSwitch(2)).pack(side="left", pady=5)
         tk.Button(row8, text="Dual Egram", command=lambda:
-                  egramSwitch(3)).pack(side="left", pady=5)
+                  _egramSwitch(3)).pack(side="left", pady=5)
 
 
         # AOOR
@@ -494,11 +494,11 @@ class _Menu(tk.Frame):
         tk.Label(row11, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row11, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row11, text="Atrium Egram", command=lambda:
-                  egramSwitch(1)).pack(side="left", pady=5)
+                  _egramSwitch(1)).pack(side="left", pady=5)
         tk.Button(row11, text="Ventricle Egram", command=lambda:
-                  egramSwitch(2)).pack(side="left", pady=5)
+                  _egramSwitch(2)).pack(side="left", pady=5)
         tk.Button(row11, text="Dual Egram", command=lambda:
-                  egramSwitch(3)).pack(side="left", pady=5)
+                  _egramSwitch(3)).pack(side="left", pady=5)
 
 
         # VOOR
@@ -548,11 +548,11 @@ class _Menu(tk.Frame):
         tk.Label(row11, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row11, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row11, text="Atrium Egram", command=lambda:
-                  egramSwitch(1)).pack(side="left", pady=5)
+                  _egramSwitch(1)).pack(side="left", pady=5)
         tk.Button(row11, text="Ventricle Egram", command=lambda:
-                  egramSwitch(2)).pack(side="left", pady=5)
+                  _egramSwitch(2)).pack(side="left", pady=5)
         tk.Button(row11, text="Dual Egram", command=lambda:
-                  egramSwitch(3)).pack(side="left", pady=5)
+                  _egramSwitch(3)).pack(side="left", pady=5)
 
 
         # AAIR
@@ -625,11 +625,11 @@ class _Menu(tk.Frame):
         tk.Label(row14, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row14, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row14, text="Atrium Egram", command=lambda:
-                  egramSwitch(1)).pack(side="left", pady=5)
+                  _egramSwitch(1)).pack(side="left", pady=5)
         tk.Button(row14, text="Ventricle Egram", command=lambda:
-                  egramSwitch(2)).pack(side="left", pady=5)
+                  _egramSwitch(2)).pack(side="left", pady=5)
         tk.Button(row14, text="Dual Egram", command=lambda:
-                  egramSwitch(3)).pack(side="left", pady=5)
+                  _egramSwitch(3)).pack(side="left", pady=5)
 
 
         # VVIR
@@ -697,11 +697,11 @@ class _Menu(tk.Frame):
         tk.Label(row13, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row13, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row13, text="Atrium Egram", command=lambda:
-                  egramSwitch(1)).pack(side="left", pady=5)
+                  _egramSwitch(1)).pack(side="left", pady=5)
         tk.Button(row13, text="Ventricle Egram", command=lambda:
-                  egramSwitch(2)).pack(side="left", pady=5)
+                  _egramSwitch(2)).pack(side="left", pady=5)
         tk.Button(row13, text="Dual Egram", command=lambda:
-                  egramSwitch(3)).pack(side="left", pady=5)
+                  _egramSwitch(3)).pack(side="left", pady=5)
 
 
         # DOOR
@@ -774,11 +774,11 @@ class _Menu(tk.Frame):
         tk.Label(row14, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row14, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row14, text="Atrium Egram", command=lambda:
-                  egramSwitch(1)).pack(side="left", pady=5)
+                  _egramSwitch(1)).pack(side="left", pady=5)
         tk.Button(row14, text="Ventricle Egram", command=lambda:
-                  egramSwitch(2)).pack(side="left", pady=5)
+                  _egramSwitch(2)).pack(side="left", pady=5)
         tk.Button(row14, text="Dual Egram", command=lambda:
-                  egramSwitch(3)).pack(side="left", pady=5)
+                  _egramSwitch(3)).pack(side="left", pady=5)
 
         
         # DDDR
@@ -876,8 +876,8 @@ class _Menu(tk.Frame):
         tk.Label(row19, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row19, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row19, text="Atrium Egram", command=lambda:
-                  egramSwitch(1)).pack(side="left", pady=5)
+                  _egramSwitch(1)).pack(side="left", pady=5)
         tk.Button(row19, text="Ventricle Egram", command=lambda:
-                  egramSwitch(2)).pack(side="left", pady=5)
+                  _egramSwitch(2)).pack(side="left", pady=5)
         tk.Button(row19, text="Dual Egram", command=lambda:
-                  egramSwitch(3)).pack(side="left", pady=5)
+                  _egramSwitch(3)).pack(side="left", pady=5)
