@@ -7,6 +7,7 @@ import json
 import os
 from Interface import *
 import sys
+import time
 
 database = {}
 pacemaker_values = {}
@@ -169,7 +170,17 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
             print(out)'''
     except KeyError as e:
         messagebox.showinfo("Error", "Something went critically wrong: " + str(e))
-        
+
+
+def wait_response():
+    # 10 seconds
+    end = time.time() + 10
+
+    while time.time() < end:
+        for line in board.read():
+            print(line)
+
+    board.close()
 
 
 
