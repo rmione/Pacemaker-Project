@@ -261,7 +261,7 @@ class _Menu(tk.Frame):
         AOOPW = tk.Scale(row4, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         AOOPW.pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
-                  update_info(1, AOOLRL.get(), AOOURL.get(), AOOAA.get(), 0, AOOPW.get(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
+                  update_info(1, AOOLRL.get(), AOOURL.get(), AOOAA.get(), 3, AOOPW.get(), 10, 2.75, 2.75, 300, 300, 120, 0, 150, 4, 10, 8, 2, 0, 0, UserID)).pack(side="bottom", pady=5)
         tk.Label(row6, text="User: " + UserID).pack(side="left", padx=5, pady=5)
         tk.Label(row6, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row6, text="Atrium Egram", command=lambda:
@@ -297,7 +297,7 @@ class _Menu(tk.Frame):
         VOOPW = tk.Scale(row4, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         VOOPW.pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
-                  update_info(2, VOOLRL.get(), VOOURL.get(), 0, VOOVA.get(), 1, VOOPW.get(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
+                  update_info(2, VOOLRL.get(), VOOURL.get(), 3, VOOVA.get(), 10, VOOPW.get(), 2.75, 2.75, 300, 300, 120, 0, 150, 4, 10, 8, 2, UserID)).pack(side="bottom", pady=5)
         tk.Label(row6, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row6, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row6, text="Atrium Egram", command=lambda:
@@ -343,7 +343,7 @@ class _Menu(tk.Frame):
         AAIARP = tk.Scale(row6, from_=150, to=500, length=600, tickinterval=20, orient=tk.HORIZONTAL)
         AAIARP.pack(side="left", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
-                  update_info(3, AAILRL.get(), AAIURL.get(), AAIAA.get(), 0, AAIPW.get(), 0, AAIAS.get(), 0, AAIARP.get(), 0, 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
+                  update_info(3, AAILRL.get(), AAIURL.get(), AAIAA.get(), 3, AAIPW.get(), 10, AAIAS.get(), 2.75, AAIARP.get(), 300, 120, 0, 150, 4, 10, 8, 2, UserID)).pack(side="bottom", pady=5)
         tk.Label(row8, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row8, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row8, text="Atrium Egram", command=lambda:
@@ -389,7 +389,7 @@ class _Menu(tk.Frame):
         VVIVRP = tk.Scale(row6, from_=150, to=500, length=600, tickinterval=20, orient=tk.HORIZONTAL)
         VVIVRP.pack(side="left", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
-                  update_info(4, VVILRL.get(), VVIURL.get(), 0, VVIVA.get(), 0, VVIPW.get(), 0, VVIVS.get(), 0, VVIVRP.get(), 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
+                  update_info(4, VVILRL.get(), VVIURL.get(), 3, VVIVA.get(), 10, VVIPW.get(), 2.75, VVIVS.get(), 300, VVIVRP.get(), 120, 0, 150, 4, 10, 8, 2, UserID)).pack(side="bottom", pady=5)
         tk.Label(row8, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row8, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row8, text="Atrium Egram", command=lambda:
@@ -436,7 +436,7 @@ class _Menu(tk.Frame):
         DOOVPW = tk.Scale(row6, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         DOOVPW.pack(side="right", padx=5, pady=5)
         tk.Button(row7, text="Submit", command=lambda:
-                  update_info(5, DOOLRL.get(), DOOURL.get(), DOOAA.get(), DOOVA.get(), DOOAPW.get(), DOOVPW.get(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, UserID)).pack(side="bottom", pady=5)
+                  update_info(5, DOOLRL.get(), DOOURL.get(), DOOAA.get(), DOOVA.get(), DOOAPW.get(), DOOVPW.get(), 2.75, 2.75, 300, 300, 120, 0, 150, 4, 10, 8, 2, UserID)).pack(side="bottom", pady=5)
         tk.Label(row8, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row8, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row8, text="Atrium Egram", command=lambda:
@@ -490,7 +490,7 @@ class _Menu(tk.Frame):
         AOORAT = tk.Scale(row5, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
         AOORAT.pack(side="left", padx=5, pady=5)
         tk.Button(row10, text="Submit", command=lambda:
-                  update_info(6, AOORLRL.get(), AOORURL.get(), AOORAA.get(), 0, AOORAPW.get(), 0, 0, 0, 0, 0, AOORMSR.get(), 0, 0, AOORRT.get(), AOORRCT.get(), AOORRF.get(), AOORAT.get(), UserID)).pack(side="bottom", pady=5)
+                  update_info(6, AOORLRL.get(), AOORURL.get(), AOORAA.get(), 3, AOORAPW.get(), 10, 2.75, 2.75, 300, 300, AOORMSR.get(), 0, 150, AOORRT.get(), AOORRCT.get(), AOORRF.get(), AOORAT.get(), UserID)).pack(side="bottom", pady=5)
         tk.Label(row11, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row11, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row11, text="Atrium Egram", command=lambda:
@@ -544,7 +544,7 @@ class _Menu(tk.Frame):
         VOORAT = tk.Scale(row5, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
         VOORAT.pack(side="left", padx=5, pady=5)
         tk.Button(row10, text="Submit", command=lambda:
-                  update_info(7, VOORLRL.get(), VOORURL.get(), 0, VOORVA.get(), 0, VOORVPW.get(), 0, 0, 0, 0, VOORMSR.get(), 0, 0, VOORRT.get(), VOORRCT.get(), VOORRF.get(), VOORAT.get(), UserID)).pack(side="bottom", pady=5)
+                  update_info(7, VOORLRL.get(), VOORURL.get(), 3, VOORVA.get(), 10, VOORVPW.get(), 2.75, 2.75, 300, 300, VOORMSR.get(), 0, 150, VOORRT.get(), VOORRCT.get(), VOORRF.get(), VOORAT.get(), UserID)).pack(side="bottom", pady=5)
         tk.Label(row11, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row11, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row11, text="Atrium Egram", command=lambda:
@@ -621,7 +621,7 @@ class _Menu(tk.Frame):
         AAIRAT = tk.Scale(row6, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
         AAIRAT.pack(side="left", padx=0, pady=5)
         tk.Button(row13, text="Submit", command=lambda:
-                  update_info(8, AAIRLRL.get(), AAIRURL.get(), AAIRAA.get(), 0, AAIRAPW.get(), 0, AAIRAS.get(), 0, AAIRARP.get(), 0, AAIRMSR.get(), AAIRPVARP.get(), 0, AAIRRT.get(), AAIRRCT.get(), AAIRRF.get(), AAIRAT.get(), UserID)).pack(side="bottom", pady=5)
+                  update_info(8, AAIRLRL.get(), AAIRURL.get(), AAIRAA.get(), 3, AAIRAPW.get(), 10, AAIRAS.get(), 2.75, AAIRARP.get(), 300, AAIRMSR.get(), AAIRPVARP.get(), 0, AAIRRT.get(), AAIRRCT.get(), AAIRRF.get(), AAIRAT.get(), UserID)).pack(side="bottom", pady=5)
         tk.Label(row14, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row14, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row14, text="Atrium Egram", command=lambda:
@@ -693,7 +693,7 @@ class _Menu(tk.Frame):
         VVIRAT = tk.Scale(row11, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
         VVIRAT.pack(side="left", padx=5, pady=5)
         tk.Button(row12, text="Submit", command=lambda:
-                  update_info(9, VVIRLRL.get(), VVIRURL.get(), 0, VVIRVA.get(), 0, VVIRVPW.get(), 0, VVIRVS.get(), 0, VVIRVRP.get(), VVIRMSR.get(), 0, 0, VVIRRT.get(), VVIRRCT.get(), VVIRRF.get(), VVIRAT.get(), UserID)).pack(side="bottom", pady=5)
+                  update_info(9, VVIRLRL.get(), VVIRURL.get(), 3, VVIRVA.get(), 10, VVIRVPW.get(), 2.75, VVIRVS.get(), 300, VVIRVRP.get(), VVIRMSR.get(), 0, 150, VVIRRT.get(), VVIRRCT.get(), VVIRRF.get(), VVIRAT.get(), UserID)).pack(side="bottom", pady=5)
         tk.Label(row13, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row13, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row13, text="Atrium Egram", command=lambda:
@@ -770,7 +770,7 @@ class _Menu(tk.Frame):
         DOORAT = tk.Scale(row6, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
         DOORAT.pack(side="left", padx=5, pady=5)
         tk.Button(row13, text="Submit", command=lambda:
-                  update_info(10, DOORLRL.get(), DOORURL.get(), DOORAA.get(), DOORVA.get(), DOORAPW.get(), DOORVPW.get(), 0, 0, 0, 0, DOORMSR.get(), 0, DOORFAVD.get(), DOORRT.get(), DOORRCT.get(), DOORRF.get(), DOORAT.get(), UserID)).pack(side="bottom", pady=5)
+                  update_info(10, DOORLRL.get(), DOORURL.get(), DOORAA.get(), DOORVA.get(), DOORAPW.get(), DOORVPW.get(), 2.75, 2.75, 300, 300, DOORMSR.get(), 150, DOORFAVD.get(), DOORRT.get(), DOORRCT.get(), DOORRF.get(), DOORAT.get(), UserID)).pack(side="bottom", pady=5)
         tk.Label(row14, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row14, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row14, text="Atrium Egram", command=lambda:
