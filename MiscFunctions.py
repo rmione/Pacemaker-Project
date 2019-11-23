@@ -164,7 +164,7 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
             print("Now we're reading...")
             out = board.read(17)
             print(out)'''
-        wait_response() 
+        wait_response()
     except KeyError as e:
         messagebox.showinfo("Error", "Something went critically wrong: " + str(e))
 
