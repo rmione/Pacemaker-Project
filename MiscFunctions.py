@@ -174,9 +174,9 @@ def wait_response():
     # 10 seconds
 
     while True:
-        x = board.readline()
+        queue = board.inWaiting()
         print("yello")
-        print(struct.unpack('<BHHddHHddHHHHHBBHB', x))
+        print(struct.unpack('<BHHddHHddHHHHHBBHB', queue.read()))
 
 
 
