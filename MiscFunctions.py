@@ -143,9 +143,11 @@ board = serial.Serial(
 
                     )
 
+
 def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh):
     
     # todo: in this case we'll need to make sure the user exists when we do this
+    li = [mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh]
     try:
         """
         Something like this is basically what we're going to have to do afaik so I'll leave it at that
@@ -154,26 +156,31 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
         #print(type(pacemaker_params["Low_Limit"]))
         #print(type(pacemaker_params["Up_Limit"]))
         data = to_bytes(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh)
-        '''
-        print(data)
-        print(board.name)'''
-        board.write(data)
-        '''
-        while True:
-            print("Now we're reading...")
-            out = board.read(17)
-            print(out)'''
 
-        wait_response() 
+        board.write(data)
+
+        i = 0  # iteration variable for parallel iteration!
+        board_vals = wait_response()
+        for value in board_vals:
+            if value != li[i]:
+                print("Inconsistency!!!!!!")
+                messagebox.showerror("Communication Error", "A value was not transmitted correctly.")
+
+            i = i + 1
+            print("Good")
 
     except KeyError as e:
         messagebox.showinfo("Error", "Something went critically wrong: " + str(e))
 
 
 def wait_response():
-    # 10 seconds
+    """
+    This function gets the response from the board of the 55 bytes.
+    It then unpacks the bytes into a tuple of values we can use.
 
-    board_data = struct.unpack('<BHHddHHddHHHHHBBH', board.read(55)) 
+    :return:
+    """
+    return struct.unpack('<BHHddHHddHHHHHBBH', board.read(55))
     
    
 
