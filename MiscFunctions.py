@@ -84,20 +84,16 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, M
     Neatly updates dictionary with pacemaker parameters as per requirements in documentation.
     """
 
-    
-
     UpdateMsg = ""            
                 
-    if float(low) > float(up):
+    if low > up:
         low = 50
         UpdateMsg = UpdateMsg + "Lower Rate Limit Fixed to 50ppm \n"
-    elif float(low) < 50:
-        low = 50
+
     pacemaker_values.update({user :{"Mode": mode, "Up_Limit": (up), "Low_Limit": (low), "A_Amp": (AAmp), "V_Amp": (VAmp), "A_PW": (APW), "V_PW": (VPW), "A_Sense": (ASense), "V_Sense": (VSense), "ARP": (ARP), "VRP": (VRP), "Max_Sense": (MaxSense), "PVARP": (PVARP), "FAVD": (FAVD), "ReTime": (ReTime), "RecTime": (RecTime), "RespFact": (RespFact), "AThresh": (AThresh)}})
     IO.dump(UPLOAD_LOCATION, pacemaker_values)
     communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh)
     UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
-    #print(UpdateMsg)
     messagebox.showinfo("Pacemaker Message", UpdateMsg)
 
 '''
@@ -174,6 +170,7 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
 
 def wait_response():
     # 10 seconds
+    messagebox.
     end = time.time() + 10
 
     while time.time() < end:
