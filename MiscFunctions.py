@@ -147,7 +147,7 @@ board = serial.Serial(
 def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh):
     
     # todo: in this case we'll need to make sure the user exists when we do this
-    li = [mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh]
+    li = [mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, FAVD, ReTime, RecTime, RespFact, AThresh, MaxSense]
     try:
         """
         Something like this is basically what we're going to have to do afaik so I'll leave it at that
@@ -164,7 +164,7 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
         for value in board_vals:
             if value != li[i]:
                 print("Inconsistency!!!!!!")
-                messagebox.showerror("Communication Error", "A value was not transmitted correctly.")
+                messagebox.showerror("Communication Error", "A value was not transmitted correctly. Shown here: %d, and %d" %(value, li[i]))
 
             i = i + 1
             print("Good")
