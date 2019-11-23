@@ -11,7 +11,6 @@ import time
 
 database = {}
 pacemaker_values = {}
-user_info = []
 
 # Shift value is hardcoded here as a constant for use later in the encrypt/decrypt functions
 SHIFT = 2
@@ -164,6 +163,7 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
             print("Now we're reading...")
             out = board.read(17)
             print(out)'''
+        wait_response() 
     except KeyError as e:
         messagebox.showinfo("Error", "Something went critically wrong: " + str(e))
 
@@ -171,9 +171,11 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
 def wait_response():
     # 10 seconds
     end = time.time() + 10
+    print("pre-loop")
 
     while time.time() < end:
         for line in board.read():
+            print("Line")
             print(line)
 
     board.close()
