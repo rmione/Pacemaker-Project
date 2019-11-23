@@ -161,9 +161,9 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
         data = to_bytes(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh)
         '''
         print(data)
-        print(board.name)
+        print(board.name)'''
         board.write(data)
-        
+        '''
         while True:
             print("Now we're reading...")
             out = board.read(17)
