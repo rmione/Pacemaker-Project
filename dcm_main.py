@@ -6,6 +6,6 @@ from Interface import *
 
 
 if __name__ == "__main__":
-    app = SampleApp()
+    app = DCM()
     app.mainloop()
 
