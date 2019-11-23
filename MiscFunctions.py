@@ -173,11 +173,9 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
 def wait_response():
     # 10 seconds
 
-   
     board_data = struct.unpack('<BHHddHHddHHHHHBBH', board.read(55)) 
     
    
-
 
 
 
