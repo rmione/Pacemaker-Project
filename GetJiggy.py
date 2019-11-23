@@ -33,7 +33,7 @@ def list_ports():
     return connected_ports
 
 
-def to_bytes(mode, low, up):
+def to_bytes(mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, MSR, FAVD, RE, REC, RES, AT):
     """
     Going to need some sort of order here.
     Judging by the params we have laid out, something like this: 
@@ -49,7 +49,7 @@ def to_bytes(mode, low, up):
 
     """
     # todo: Mostafa said struct.pack() can be directly written to serial. But let's return the bytesarray
-    return struct.pack('BBB', mode, ord(chr(low)), up)  # todo: honestly don't know if this is fine or not. We'll have to see.
+    return struct.pack('<BHHddHHddHHHHHBBHB', mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, FAVD, RE, REC, RES, AT, MSR, 255)  # todo: honestly don't know if this is fine or not. We'll have to see.
     # DCM to Board= FF, Board to DCM = 00!
 
 baud_rate = 115200
@@ -88,19 +88,35 @@ def communicate_parameters(username):
             """
             Something like this is basically what we're going to have to do afaik so I'll leave it at that
             """
-            print(type(pacemaker_params["Mode"]))
-            print(type(pacemaker_params["Low_Limit"]))
-            print(type(pacemaker_params["Up_Limit"]))
+            #print(type(pacemaker_params["Mode"]))
+            #print(type(pacemaker_params["Low_Limit"]))
+            #print(type(pacemaker_params["Up_Limit"]))
             data = to_bytes(
                 pacemaker_params["Mode"],
                 pacemaker_params["Low_Limit"],
                 pacemaker_params["Up_Limit"],
-                
+                pacemaker_params["A_Amp"],
+                pacemaker_params["V_Amp"],
+                pacemaker_params["A_PW"],
+                pacemaker_params["V_PW"],
+                pacemaker_params["A_Sense"],
+                pacemaker_params["V_Sense"],
+                pacemaker_params["ARP"],
+                pacemaker_params["VRP"],
+                pacemaker_params["Max_Sense"],
+                pacemaker_params["FAVD"],
+                pacemaker_params["ReTime"],
+                pacemaker_params["RecTime"],
+                pacemaker_params["RespFact"],
+                pacemaker_params["AThresh"],
                # pacemaker_params["A_Amp"]
             )
 
             
             print(data)
+            #data= b'\1\120\120\255'
+            #print(data)
+            print(board.name)
             board.write(data)
 
             while True:
