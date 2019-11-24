@@ -155,12 +155,12 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
         #print(type(pacemaker_params["Mode"]))
         #print(type(pacemaker_params["Low_Limit"]))
         #print(type(pacemaker_params["Up_Limit"]))
-        data = to_bytes(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh)
+        data = _to_bytes(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh)
 
         board.write(data)
 
         i = 0  # iteration variable for parallel iteration!
-        board_vals = wait_response()
+        board_vals = _wait_response()
         for value in board_vals:
             if value != li[i]:
                 print("Inconsistency!!!!!!")
