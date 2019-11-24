@@ -261,7 +261,7 @@ class _Menu(tk.Frame):
         AOOPW = tk.Scale(row4, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         AOOPW.pack(side="left", padx=5, pady=5)
         tk.Button(row5, text="Submit", command=lambda:
-                  update_info(1, AOOLRL.get(), AOOURL.get(), AOOAA.get(), 3, AOOPW.get(), 10, 2.75, 2.75, 300, 300, 120, 0, 150, 4, 10, 8, 2, 0, 0, UserID)).pack(side="bottom", pady=5)
+                  update_info(1, AOOLRL.get(), AOOURL.get(), AOOAA.get(), 3, AOOPW.get(), 10, 2.75, 2.75, 300, 300, 120, 0, 150, 4, 10, 8, 2, UserID)).pack(side="bottom", pady=5)
         tk.Label(row6, text="User: " + UserID).pack(side="left", padx=5, pady=5)
         tk.Label(row6, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row6, text="Atrium Egram", command=lambda:

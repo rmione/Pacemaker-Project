@@ -95,23 +95,6 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, M
     UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
     messagebox.showinfo("Pacemaker Message", UpdateMsg)
 
-'''
-    try:
-        """
-        This conditional checks that all the strings passed in as parameters convert properly. It is inside a try-except 
-        to catch a faulty conversion
-        """
-        if int(mode) and int(low) and int(up) and int(AAmp) and int(VAmp) and int(APW) and int(VPW) and int(ASense) and int(VSense) and int(ARP) and int(VRP) and int(MaxSense) and int(PVARP) and int(FAVD):
-            pass
-        
-    except ValueError as e:
-
-        """
-        In this situation, we have some invalid input, and it didn't convert properly. 
-        
-        """
-        messagebox.showinfo("Error", "Invalid info! Re enter")
-'''
 
 
 def _to_bytes(mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, MSR, FAVD, RE, REC, RES, AT):
@@ -123,13 +106,7 @@ def _to_bytes(mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, MSR
 
     # Something like this seems to be the proper thing to do. We'll have to see
 
-    """
-    Mostafa was sayng that uint8s can be denoted for Python purposes to shorts or char? 
-    doubles are d
-    
 
-    """
-    # todo: Mostafa said struct.pack() can be directly written to serial. But let's return the bytesarray
     return struct.pack('<BHHddHHddHHHHHBBHB', mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, FAVD, RE, REC, RES, AT, MSR, 255)  # todo: honestly don't know if this is fine or not. We'll have to see.
     # DCM to Board= FF, Board to DCM = 00!
 
@@ -140,48 +117,43 @@ board = serial.Serial(
                         baudrate=baud_rate,
                         parity=serial.PARITY_NONE,
                         bytesize=8
-
                     )
 
 
 def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh):
-    
-    # todo: in this case we'll need to make sure the user exists when we do this
-    li = [mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, FAVD, ReTime, RecTime, RespFact, AThresh, MaxSense]
+
+    good_params = [mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, FAVD, ReTime, RecTime, RespFact, AThresh, MaxSense]
     try:
-        """
-        Something like this is basically what we're going to have to do afaik so I'll leave it at that
-        """
-        #print(type(pacemaker_params["Mode"]))
-        #print(type(pacemaker_params["Low_Limit"]))
-        #print(type(pacemaker_params["Up_Limit"]))
         data = _to_bytes(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh)
 
         board.write(data)
 
         i = 0  # iteration variable for parallel iteration!
-        board_vals = _wait_response()
-        for value in board_vals:
-            if value != li[i]:
-                print("Inconsistency!!!!!!")
-                messagebox.showerror("Communication Error", "A value was not transmitted correctly. Shown here: %d, and %d" %(value, li[i]))
+        transmission_ok = True # We will assume for the implementation that transmission will go OK until it doesn't!
+        board_params = struct.unpack('<BHHddHHddHHHHHBBH', board.read(55))
 
+        """
+        Here we will iterate through the original parameters and the parameters we recieve from the microcontroller
+        to make sure that they are one-to-one and have therefore transmitted correctly! 
+        """
+
+        for value in board_params:
+            if value != good_params[i]:
+                # In this case we have an issue with the transmission of the values!
+                messagebox.showerror("Communication Error", "A parameter was not transmitted correctly. The difference is shown here: %d, and %d" %(value, good_params[i]))
+                transmission_ok = False # error occurred so it changes to False.
+            
+            # No issue in this case so increment by 1.
             i = i + 1
-            print("Good")
+
+        if transmission_ok:
+            messagebox.showinfo("Communication OK", "All parameters were transmitted properly")
+
 
     except KeyError as e:
         messagebox.showinfo("Error", "Something went critically wrong: " + str(e))
 
 
-def _wait_response():
-    """
-    This function gets the response from the board of the 55 bytes.
-    It then unpacks the bytes into a tuple of values we can use.
-
-    :return:
-    """
-    return struct.unpack('<BHHddHHddHHHHHBBH', board.read(55))
-    
    
 
 
