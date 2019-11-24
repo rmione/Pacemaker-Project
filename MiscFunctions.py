@@ -114,7 +114,7 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, M
 '''
 
 
-def to_bytes(mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, MSR, FAVD, RE, REC, RES, AT):
+def _to_bytes(mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, MSR, FAVD, RE, REC, RES, AT):
     """
     Going to need some sort of order here.
     Judging by the params we have laid out, something like this: 
@@ -173,7 +173,7 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
         messagebox.showinfo("Error", "Something went critically wrong: " + str(e))
 
 
-def wait_response():
+def _wait_response():
     """
     This function gets the response from the board of the 55 bytes.
     It then unpacks the bytes into a tuple of values we can use.
