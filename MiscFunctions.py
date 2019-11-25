@@ -89,7 +89,11 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, M
         low = 50
         UpdateMsg = UpdateMsg + "Lower Rate Limit Fixed to 50ppm \n"
 
-    pacemaker_values.update({user :{"Mode": mode, "Up_Limit": (up), "Low_Limit": (low), "A_Amp": (AAmp), "V_Amp": (VAmp), "A_PW": (APW), "V_PW": (VPW), "A_Sense": (ASense), "V_Sense": (VSense), "ARP": (ARP), "VRP": (VRP), "Max_Sense": (MaxSense), "PVARP": (PVARP), "FAVD": (FAVD), "ReTime": (ReTime), "RecTime": (RecTime), "RespFact": (RespFact), "AThresh": (AThresh)}})
+    if MaxSense < low:
+        # in this case we need to tell them, and exit the function
+        messagebox.showinfo("Pacemaker Message", "Max Sensor Rate must be greater than or equal to the Lower Limit.")
+        return
+    pacemaker_values.update({user: {"Mode": mode, "Up_Limit": (up), "Low_Limit": (low), "A_Amp": (AAmp), "V_Amp": (VAmp), "A_PW": (APW), "V_PW": (VPW), "A_Sense": (ASense), "V_Sense": (VSense), "ARP": (ARP), "VRP": (VRP), "Max_Sense": (MaxSense), "PVARP": (PVARP), "FAVD": (FAVD), "ReTime": (ReTime), "RecTime": (RecTime), "RespFact": (RespFact), "AThresh": (AThresh)}})
     IO.dump(UPLOAD_LOCATION, pacemaker_values)
     communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh)
     UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
@@ -99,19 +103,15 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, M
 
 def _to_bytes(mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, MSR, FAVD, RE, REC, RES, AT):
     """
-    Going to need some sort of order here.
-    Judging by the params we have laid out, something like this: 
-        mode:lowerratelim:upperratelim:... and so on, and so forth
+    Takes parameters and packs them into a bytes array for serial comms.
+    Returns said bytes array.
     """
 
     # Something like this seems to be the proper thing to do. We'll have to see
-
-
     return struct.pack('<BHHddHHddHHHHHBBHB', mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, FAVD, RE, REC, RES, AT, MSR, 255)  # todo: honestly don't know if this is fine or not. We'll have to see.
     # DCM to Board= FF, Board to DCM = 00!
 
 baud_rate = 115200
-# You can define Serial objects with unique parameters, so we can have different parities, bytesize etc. will be handy!!
 board = serial.Serial(
                         port='COM8',
                         baudrate=baud_rate,
