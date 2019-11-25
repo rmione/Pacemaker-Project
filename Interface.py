@@ -872,7 +872,7 @@ class _Menu(tk.Frame):
         DDDRAT = tk.Scale(row17, from_=1, to=4, length=300, tickinterval=1, orient=tk.HORIZONTAL)
         DDDRAT.pack(side="left", padx=5, pady=0)
         tk.Button(row18, text="Submit", command=lambda:
-                  update_info(10, DDDRLRL.get(), DDDRURL.get(), DDDRAA.get(), DDDRVA.get(), DDDRAPW.get(), DDDRVPW.get(), DDDRAS.get(), DDDRVS.get(), DDDRARP.get(), DDDRVRP.get(), DDDRMSR.get(), DDDRPVARP.get(), DDDRFAVD.get(), DDDRRT.get(), DDDRRCT.get(), DDDRRF.get(), DDDRAT.get(), UserID)).pack(side="bottom", pady=5)
+                  update_info(11, DDDRLRL.get(), DDDRURL.get(), DDDRAA.get(), DDDRVA.get(), DDDRAPW.get(), DDDRVPW.get(), DDDRAS.get(), DDDRVS.get(), DDDRARP.get(), DDDRVRP.get(), DDDRMSR.get(), DDDRPVARP.get(), DDDRFAVD.get(), DDDRRT.get(), DDDRRCT.get(), DDDRRF.get(), DDDRAT.get(), UserID)).pack(side="bottom", pady=5)
         tk.Label(row19, text="User: " + UserID).pack(side="left", padx=0, pady=5)
         tk.Label(row19, text=" ").pack(side="left", padx=180, pady=5)
         tk.Button(row19, text="Atrium Egram", command=lambda:
