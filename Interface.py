@@ -168,7 +168,7 @@ class _Login(tk.Frame):
         tk.Label(self, text="Enter Username").pack()
         tk.Entry(self, textvariable=v1).pack()
         tk.Label(self, text="Enter Password").pack()
-        tk.Entry(self, textvariable=v2).pack(padx=5)
+        tk.Entry(self, show="*", textvariable=v2).pack(padx=5)
         tk.Button(self, text="Submit", command=lambda: _login_test(v1, v2, master)).pack()
         tk.Button(self, text="Return to start page",
                   command=lambda: master.switch_frame(_StartUp)).pack()
@@ -856,7 +856,7 @@ class _Menu(tk.Frame):
         tk.Label(row4, text="VRP (ms)").pack(side="left", padx=70, pady=5)
         DDDRVRP = tk.Scale(row4, from_=150, to=500, length=300, tickinterval=30, orient=tk.HORIZONTAL)
         DDDRVRP.pack(side="left", padx=0, pady=5)
-        tk.Label(row5, text="PVARP (ms)").pack(side="left", padx=57, pady=5)#########################################
+        tk.Label(row5, text="PVARP (ms)").pack(side="left", padx=57, pady=5)
         DDDRPVARP = tk.Scale(row5, from_=150, to=500, length=300, tickinterval=30, orient=tk.HORIZONTAL)
         DDDRPVARP.pack(side="left", padx=5, pady=5)
         tk.Label(row6, text="Reaction Time (s)").pack(side="left", padx=42, pady=5)
