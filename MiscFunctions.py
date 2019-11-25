@@ -89,13 +89,13 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, M
         low = 50
         UpdateMsg = UpdateMsg + "Lower Rate Limit Fixed to 50ppm \n"
 
-    if MaxSense < low:
+    if MaxSense < low and mode >= 6:
         # in this case we need to tell them, and exit the function
         messagebox.showinfo("Pacemaker Message", "Max Sensor Rate must be greater than or equal to the Lower Limit.")
         return
     pacemaker_values.update({user: {"Mode": mode, "Up_Limit": (up), "Low_Limit": (low), "A_Amp": (AAmp), "V_Amp": (VAmp), "A_PW": (APW), "V_PW": (VPW), "A_Sense": (ASense), "V_Sense": (VSense), "ARP": (ARP), "VRP": (VRP), "Max_Sense": (MaxSense), "PVARP": (PVARP), "FAVD": (FAVD), "ReTime": (ReTime), "RecTime": (RecTime), "RespFact": (RespFact), "AThresh": (AThresh)}})
     IO.dump(UPLOAD_LOCATION, pacemaker_values)
-    communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh)
+    # communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh)
     UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
     messagebox.showinfo("Pacemaker Message", UpdateMsg)
 
@@ -108,16 +108,16 @@ def _to_bytes(mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, MSR
     """
 
     # Something like this seems to be the proper thing to do. We'll have to see
-    return struct.pack('<BHHddHHddHHHHHBBHB', mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, FAVD, RE, REC, RES, AT, MSR, 255)  # todo: honestly don't know if this is fine or not. We'll have to see.
+    return struct.pack('<BHHddHHddHHHHHBBHB', mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, FAVD, RE, REC, RES, AT, MSR, 255)
     # DCM to Board= FF, Board to DCM = 00!
 
 baud_rate = 115200
-board = serial.Serial(
-                        port='COM8',
-                        baudrate=baud_rate,
-                        parity=serial.PARITY_NONE,
-                        bytesize=8
-                    )
+# board = serial.Serial(
+#                         port='COM8',
+#                         baudrate=baud_rate,
+#                         parity=serial.PARITY_NONE,
+#                         bytesize=8
+#                     )
 
 
 def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh):
@@ -129,7 +129,7 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
         board.write(data)
 
         i = 0  # iteration variable for parallel iteration!
-        transmission_ok = True # We will assume for the implementation that transmission will go OK until it doesn't!
+        transmission_ok = True  # We will assume for the implementation that transmission will go OK until it doesn't!
         board_params = struct.unpack('<BHHddHHddHHHHHBBH', board.read(55))
 
         """
@@ -140,7 +140,7 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
         for value in board_params:
             if value != good_params[i]:
                 # In this case we have an issue with the transmission of the values!
-                messagebox.showerror("Communication Error", "A parameter was not transmitted correctly. The difference is shown here: %d, and %d" %(value, good_params[i]))
+                messagebox.showerror("Communication Error", "A parameter was not transmitted correctly. The difference is shown here: %d, and %d" % (value, good_params[i]))
                 transmission_ok = False # error occurred so it changes to False.
             
             # No issue in this case so increment by 1.
@@ -148,7 +148,6 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
 
         if transmission_ok:
             messagebox.showinfo("Communication OK", "All parameters were transmitted properly")
-
 
     except KeyError as e:
         messagebox.showinfo("Error", "Something went critically wrong: " + str(e))
