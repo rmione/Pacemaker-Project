@@ -112,12 +112,12 @@ def _to_bytes(mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, MSR
     # DCM to Board= FF, Board to DCM = 00!
 
 baud_rate = 115200
-# board = serial.Serial(
-#                         port='COM8',
-#                         baudrate=baud_rate,
-#                         parity=serial.PARITY_NONE,
-#                         bytesize=8
-#                     )
+board = serial.Serial(
+                        port='COM8',
+                        baudrate=baud_rate,
+                        parity=serial.PARITY_NONE,
+                        bytesize=8
+                    )
 
 
 def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh):
