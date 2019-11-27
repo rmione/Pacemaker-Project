@@ -65,10 +65,10 @@ def _login_test(username, password, frame_class):
 
     if (len(en_user) == 0) or (len(en_pass) == 0):
         messagebox.showinfo("Invalid credentials", "Either your username or password are invalid, try again.")
-    elif database.get(en_user) == en_pass:
-        frame_class.switch_frame(_Menu)
     if database.get(en_user) != en_pass:
         messagebox.showinfo("Wrong Password", "Enter a valid password")
+    elif database.get(en_user) == en_pass:
+        frame_class.switch_frame(_Menu)
     else:
         messagebox.showinfo("User does not exist", "This user does not exist in the database, try again.")
 
