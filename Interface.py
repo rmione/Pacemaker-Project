@@ -136,6 +136,7 @@ class DCM(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self._frame = None
+        self.title("Pacemaker Interface")
         self.switch_frame(_StartUp)
 
     def switch_frame(self, frame_class):
@@ -223,7 +224,7 @@ class _Menu(tk.Frame):
         tabControl.add(AAIRTab, text='AAIR')
         tabControl.add(VVIRTab, text='VVIR')
         tabControl.add(DOORTab, text='DOOR')
-        tabControl.add(DDDRTab, text='DDDR')        
+        tabControl.add(DDDRTab, text='DDDR')
         tabControl.pack(expand=1, side="top")
         
         # AOO
