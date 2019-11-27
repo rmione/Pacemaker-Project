@@ -42,7 +42,7 @@ def _create_user(username, password, frame_class):
         database.update({en_user: en_pass})
         IO.dump(DUMP_LOCATION, database)
         # We passed an object through (master in this case)
-        frame_class.switch_frame(_Menu)
+        frame_class._switch_frame(_Menu)
     elif database.get(en_user):
         messagebox.showinfo("Username already exists.", "Please login with this user or attempt to create a new one.")
         return
@@ -68,7 +68,7 @@ def _login_test(username, password, frame_class):
     if database.get(en_user) != en_pass:
         messagebox.showinfo("Wrong Password", "Enter a valid password")
     elif database.get(en_user) == en_pass:
-        frame_class.switch_frame(_Menu)
+        frame_class._switch_frame(_Menu)
     else:
         messagebox.showinfo("User does not exist", "This user does not exist in the database, try again.")
 
@@ -137,9 +137,9 @@ class DCM(tk.Tk):
         tk.Tk.__init__(self)
         self._frame = None
         self.title("Pacemaker Interface")
-        self.switch_frame(_StartUp)
+        self._switch_frame(_StartUp)
 
-    def switch_frame(self, frame_class):
+    def _switch_frame(self, frame_class):
         """
         Destroys current frame and replaces it with a new one.
         """
@@ -156,9 +156,9 @@ class _StartUp(tk.Frame):
         master.resizable(False, False)###################################################
         tk.Label(self, text="Welcome").pack()
         tk.Button(self, text="Login",
-                  command=lambda: master.switch_frame(_Login)).pack(padx=10, pady=10)
+                  command=lambda: master._switch_frame(_Login)).pack(padx=10, pady=10)
         tk.Button(self, text="Create User",
-                  command=lambda: master.switch_frame(_CreateUser)).pack(padx=10, pady=10)
+                  command=lambda: master._switch_frame(_CreateUser)).pack(padx=10, pady=10)
 
 
 class _Login(tk.Frame):
@@ -174,9 +174,9 @@ class _Login(tk.Frame):
         tk.Entry(self, show="*", textvariable=v2).pack(padx=5)
         tk.Button(self, text="Submit", command=lambda: _login_test(v1, v2, master)).pack()
         tk.Button(self, text="Return to start page",
-                  command=lambda: master.switch_frame(_StartUp)).pack()
+                  command=lambda: master._switch_frame(_StartUp)).pack()
         if login == 1:
-            master.switch_frame(_Menu)
+            master._switch_frame(_Menu)
 
 
 class _CreateUser(tk.Frame):
@@ -192,7 +192,7 @@ class _CreateUser(tk.Frame):
         tk.Button(self, text="Create",
                   command=lambda: _create_user(v1, v2, master)).pack()
         tk.Button(self, text="Return to start page",
-                  command=lambda: master.switch_frame(_StartUp)).pack()
+                  command=lambda: master._switch_frame(_StartUp)).pack()
         
 
 class _Menu(tk.Frame):
