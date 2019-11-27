@@ -67,6 +67,8 @@ def _login_test(username, password, frame_class):
         messagebox.showinfo("Invalid credentials", "Either your username or password are invalid, try again.")
     elif database.get(en_user) == en_pass:
         frame_class.switch_frame(_Menu)
+    if database.get(en_user) != en_pass:
+        messagebox.showinfo("Wrong Password", "Enter a valid password")
     else:
         messagebox.showinfo("User does not exist", "This user does not exist in the database, try again.")
 
