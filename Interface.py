@@ -420,33 +420,38 @@ class _Menu(tk.Frame):
         row7.pack()
         row8 = ttk.Frame(DOOTab)
         row8.pack()
+        row9 = ttk.Frame(DOOTab)
+        row9.pack()
         tk.Label(row1, text="Lower Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
         DOOLRL = tk.Scale(row1, from_=50, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         DOOLRL.pack(side="right", padx=5, pady=5)
         tk.Label(row2, text="Upper Rate Limit (ppm)").pack(side="left", padx=20, pady=5)
         DOOURL = tk.Scale(row2, from_=75, to=175, length=600, tickinterval=15, orient=tk.HORIZONTAL)
         DOOURL.pack(side="right", padx=5, pady=5)
-        tk.Label(row3, text="Atrial Amplitude (V)").pack(side="left", padx=30, pady=5)
-        DOOAA = tk.Scale(row3, from_=0.5, to=5, resolution=0.5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        tk.Label(row3, text="Fixed AV Delay (ms)").pack(side="left", padx=30, pady=5)
+        DOOFAVD = tk.Scale(row3, from_=70, to=300, length=600, tickinterval=20, orient=tk.HORIZONTAL)
+        DOOFAVD.pack(side="left", padx=5, pady=5)
+        tk.Label(row4, text="Atrial Amplitude (V)").pack(side="left", padx=30, pady=5)
+        DOOAA = tk.Scale(row4, from_=0.5, to=5, resolution=0.5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
         DOOAA.pack(side="right", padx=5, pady=5)
-        tk.Label(row4, text="Ventricular Amplitude (V)").pack(side="left", padx=15, pady=5)
-        DOOVA = tk.Scale(row4, from_=0.5, to=5, resolution=0.5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
+        tk.Label(row5, text="Ventricular Amplitude (V)").pack(side="left", padx=15, pady=5)
+        DOOVA = tk.Scale(row5, from_=0.5, to=5, resolution=0.5, length=600, tickinterval=0.5, orient=tk.HORIZONTAL)
         DOOVA.pack(side="right", padx=5, pady=5)
-        tk.Label(row5, text="Atrial Pulse Width (ms)").pack(side="left", padx=21, pady=5)
-        DOOAPW = tk.Scale(row5, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
+        tk.Label(row6, text="Atrial Pulse Width (ms)").pack(side="left", padx=21, pady=5)
+        DOOAPW = tk.Scale(row6, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         DOOAPW.pack(side="right", padx=5, pady=5)
-        tk.Label(row6, text="Ventricular Pulse Width (ms)").pack(side="left", padx=7, pady=5)
-        DOOVPW = tk.Scale(row6, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
+        tk.Label(row7, text="Ventricular Pulse Width (ms)").pack(side="left", padx=7, pady=5)
+        DOOVPW = tk.Scale(row7, from_=1, to=10, length=600, tickinterval=1, orient=tk.HORIZONTAL)
         DOOVPW.pack(side="right", padx=5, pady=5)
-        tk.Button(row7, text="Submit", command=lambda:
-                  update_info(5, DOOLRL.get(), DOOURL.get(), DOOAA.get(), DOOVA.get(), DOOAPW.get(), DOOVPW.get(), 2.75, 2.75, 300, 300, 120, 0, 150, 4, 10, 8, 2, UserID)).pack(side="bottom", pady=5)
-        tk.Label(row8, text="User: " + UserID).pack(side="left", padx=0, pady=5)
-        tk.Label(row8, text=" ").pack(side="left", padx=180, pady=5)
-        tk.Button(row8, text="Atrium Egram", command=lambda:
+        tk.Button(row8, text="Submit", command=lambda:
+                  update_info(5, DOOLRL.get(), DOOURL.get(), DOOAA.get(), DOOVA.get(), DOOAPW.get(), DOOVPW.get(), 2.75, 2.75, 300, 300, 120, 0, DOOFAVD.get(), 4, 10, 8, 2, UserID)).pack(side="bottom", pady=5)
+        tk.Label(row9, text="User: " + UserID).pack(side="left", padx=0, pady=5)
+        tk.Label(row9, text=" ").pack(side="left", padx=180, pady=5)
+        tk.Button(row9, text="Atrium Egram", command=lambda:
                   _egramSwitch(1)).pack(side="left", pady=5)
-        tk.Button(row8, text="Ventricle Egram", command=lambda:
+        tk.Button(row9, text="Ventricle Egram", command=lambda:
                   _egramSwitch(2)).pack(side="left", pady=5)
-        tk.Button(row8, text="Dual Egram", command=lambda:
+        tk.Button(row9, text="Dual Egram", command=lambda:
                   _egramSwitch(3)).pack(side="left", pady=5)
 
 
