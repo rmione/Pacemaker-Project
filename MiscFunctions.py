@@ -114,11 +114,14 @@ def _to_bytes(mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, MSR
 
 baud_rate = 115200
 
+
 '''
 Serial object used for communication. The port value must match with
 the device running the software. For example, COM8 was used in development
 but would need to be switched for a different device
 '''
+
+# WARNING: the port in the belopw serial object needs to be changed for each user. It may not work right away.
 board = serial.Serial(
                         port='COM8',
                         baudrate=baud_rate,
@@ -154,7 +157,7 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
                 messagebox.showerror("Communication Error", "A parameter was not transmitted correctly. The difference is shown here: %d, and %d" % (value, good_params[i]))
                 transmission_ok = False # error occurred so it changes to False.
             
-            # No issue in this case so increment by 1.
+            # No issue in this case so incremenint by 1.
             i = i + 1
 
         if transmission_ok:
