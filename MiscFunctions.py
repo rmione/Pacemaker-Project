@@ -95,7 +95,8 @@ def update_info(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, M
         return
     pacemaker_values.update({user: {"Mode": mode, "Up_Limit": (up), "Low_Limit": (low), "A_Amp": (AAmp), "V_Amp": (VAmp), "A_PW": (APW), "V_PW": (VPW), "A_Sense": (ASense), "V_Sense": (VSense), "ARP": (ARP), "VRP": (VRP), "Max_Sense": (MaxSense), "PVARP": (PVARP), "FAVD": (FAVD), "ReTime": (ReTime), "RecTime": (RecTime), "RespFact": (RespFact), "AThresh": (AThresh)}})
     IO.dump(UPLOAD_LOCATION, pacemaker_values)
-    # communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh)
+    # Serial Communication
+    communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh)
     UpdateMsg = UpdateMsg + "Pacemaker Values Updated Successfully"
     messagebox.showinfo("Pacemaker Message", UpdateMsg)
 
@@ -112,6 +113,15 @@ def _to_bytes(mode, low, up, Aamp, Vamp, Apw, Vpw, Asense, Vsense, ARP, VRP, MSR
     # DCM to Board= FF, Board to DCM = 00!
 
 baud_rate = 115200
+
+
+'''
+Serial object used for communication. The port value must match with
+the device running the software. For example, COM8 was used in development
+but would need to be switched for a different device
+'''
+
+# WARNING: the port in the below serial object needs to be changed for each user. It may not work right away.
 board = serial.Serial(
                         port='COM8',
                         baudrate=baud_rate,
@@ -121,7 +131,11 @@ board = serial.Serial(
 
 
 def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh):
-
+    """
+    This function takes the given inputs and prepares them for serial communication.
+    Makes a local copy of the data being sent, so it can compare it to the values the board
+    receives. If an discrepancy is detected, the user is notified.
+    """
     good_params = [mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, FAVD, ReTime, RecTime, RespFact, AThresh, MaxSense]
     try:
         data = _to_bytes(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, ARP, VRP, MaxSense, FAVD, ReTime, RecTime, RespFact, AThresh)
@@ -143,7 +157,7 @@ def communicate_parameters(mode, low, up, AAmp, VAmp, APW, VPW, ASense, VSense, 
                 messagebox.showerror("Communication Error", "A parameter was not transmitted correctly. The difference is shown here: %d, and %d" % (value, good_params[i]))
                 transmission_ok = False # error occurred so it changes to False.
             
-            # No issue in this case so increment by 1.
+            # No issue in this case so incremenint by 1.
             i = i + 1
 
         if transmission_ok:
