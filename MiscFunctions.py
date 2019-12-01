@@ -121,7 +121,7 @@ the device running the software. For example, COM8 was used in development
 but would need to be switched for a different device
 '''
 
-# WARNING: the port in the belopw serial object needs to be changed for each user. It may not work right away.
+# WARNING: the port in the below serial object needs to be changed for each user. It may not work right away.
 board = serial.Serial(
                         port='COM8',
                         baudrate=baud_rate,

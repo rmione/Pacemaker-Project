@@ -10,8 +10,6 @@ import matplotlib.animation as animation
 from matplotlib import style
 
 style.use('fivethirtyeight')
-# delete this john
-# hel oooooooo
 UserID = "UserID"
 AEgram = 0
 VEgram = 0
@@ -74,6 +72,10 @@ def _login_test(username, password, frame_class):
         messagebox.showinfo("User does not exist", "This user does not exist in the database, try again.")
 
 def _egramSwitch(value):
+    """
+    Included in the program, but doesn't function like a proper egram. Determines which Egram data set to display
+    and uses _animate function to display the graph. Changes global variables that will be used in _animate
+    """
     global AEgram
     global VEgram
     style.use('fivethirtyeight')
@@ -99,6 +101,11 @@ def _egramSwitch(value):
 
         
 def _animate(i):
+    """
+    Depending on the global variables set in _egramSwitch, displays the data from the text files. Egrams aren't fully implemented
+    in the program, but this function is the beginning of including the functionality. In the future, a more practical method will
+    be used for reading the values.
+    """
     global fig
     global AEgram
     global VEgram
@@ -153,8 +160,9 @@ class DCM(tk.Tk):
 
 class _StartUp(tk.Frame):
     def __init__(self, master):
+        """ The first window that the user sees - the Welcome screen """
         tk.Frame.__init__(self, master)
-        master.resizable(False, False)###################################################
+        master.resizable(False, False)
         tk.Label(self, text="Welcome").pack()
         tk.Button(self, text="Login",
                   command=lambda: master._switch_frame(_Login)).pack(padx=10, pady=10)
@@ -164,6 +172,7 @@ class _StartUp(tk.Frame):
 
 class _Login(tk.Frame):
     def __init__(self, master):
+        """ Login Window """
         v1 = tk.StringVar()
         v2 = tk.StringVar()
         login = 0
@@ -182,6 +191,7 @@ class _Login(tk.Frame):
 
 class _CreateUser(tk.Frame):
     def __init__(self, master):
+        """ Create User Window """
         v1 = tk.StringVar()
         v2 = tk.StringVar()
         tk.Frame.__init__(self, master)
@@ -197,12 +207,10 @@ class _CreateUser(tk.Frame):
         
 
 class _Menu(tk.Frame):
-    def __init__(self, master):      
+    def __init__(self, master):
+        """ The Main Interface of the Program, Interactive Parameter Values """
         tk.Frame.__init__(self, master)
-        master.resizable(False, False)
-        '''
-        master.wm_geometry("850x200")
-        '''        
+        master.resizable(False, False)      
         tabControl = ttk.Notebook(master)
         AOOTab = ttk.Frame(tabControl)
         VOOTab = ttk.Frame(tabControl)
@@ -229,17 +237,6 @@ class _Menu(tk.Frame):
         tabControl.pack(expand=1, side="top")
         
         # AOO
-        ''' 
-        canvas = tk.Canvas(AOOTab)
-        frame = ttk.Frame(canvas)
-        myscrollbar=tk.Scrollbar(AOOTab,orient="vertical",command=canvas.yview)
-        canvas.configure(yscrollcommand=myscrollbar.set)
-
-        myscrollbar.pack(side="right",fill="y")
-        canvas.pack(side="left")
-        canvas.create_window((0,0),window=frame,anchor='nw')
-        frame.bind("<Configure>",canvas.configure(scrollregion=canvas.bbox("all"),width=0,height=400))
-        '''
         row1 = ttk.Frame(AOOTab)
         row1.pack()
         row2 = ttk.Frame(AOOTab)
@@ -791,6 +788,7 @@ class _Menu(tk.Frame):
 
         
         # DDDR
+        """ Pacemaker not programmed to function in DDDR mode yet, but DCM has functioning DDDR tab for when it is """
         row1 = ttk.Frame(DDDRTab)
         row1.pack()
         row2 = ttk.Frame(DDDRTab)
